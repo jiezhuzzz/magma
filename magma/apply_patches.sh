@@ -6,8 +6,7 @@ set -e
 # - env TARGET: path to target work dir
 ##
 
-# TODO filter patches by target config.yaml
-find "$TARGET/patches/setup" -name "*.patch" | \
+find "$TARGET/patches" -name "*.patch" ! -path "*$TARGET/patches/bugs*" | \
 while read patch; do
     echo "Applying $patch"
     name=${patch##*/}
