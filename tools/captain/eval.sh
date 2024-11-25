@@ -41,7 +41,7 @@ build_images ""
 run_campaigns ""
 
 # Modify instrument.sh for functional campaigns
-sed -i 's/MAGMA_LOG/"volatile int dummy"/g' ../../fuzzers/titan/instrument.sh
+sed -i 's/MAGMA_LOG/"(void)0"/g' ../../fuzzers/titan/instrument.sh
 
 # Run functional campaigns
 build_images "-func"
