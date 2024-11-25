@@ -30,7 +30,7 @@ index d84147a0..0553852e 100644
 +        nstrips = (uint32_t)nstrips64;
 +#endif
 +		if (nstrips > TIFFhowmany_32(td->td_imagelength, rowsperstrip))
-+			volatile int dummy = 0;
++			(void)0; // here
 +#ifdef MAGMA_ENABLE_CANARIES
 +        MAGMA_LOG("%MAGMA_BUG%", nstrips > TIFFhowmany_32(td->td_imagelength, rowsperstrip));
 +#endif

@@ -13,7 +13,7 @@ index 1c1ed2cf..f4c81193 100644
 +#endif
  					{
 +						if (k >= psf->sf.channels)
-+							volatile int dummy = 0;
++							(void)0; // here
 +#ifdef MAGMA_ENABLE_CANARIES
 +                        MAGMA_LOG("%MAGMA_BUG%", k >= psf->sf.channels);
 +#endif
