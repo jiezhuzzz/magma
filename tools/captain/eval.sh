@@ -29,7 +29,9 @@ run_campaigns() {
                      PATCH=$patch$suffix \
                      POLL=5 \
                      TIMEOUT=16h \
-                     ./start.sh &
+                     ./start.sh "$folder/campaign.log" 2>&1 &
+            pid=$!
+            echo $pid > "$folder/campaign.pid"
         done
     done
 }
