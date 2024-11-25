@@ -1,16 +1,5 @@
 #!/bin/bash -e
 
-mkdir -p work
-
-# Function to build docker images
-build_images() {
-    local suffix=$1
-    echo -e "Build Docker Images"
-    FUZZER=titan TARGET=libpng PATCH=PNG007$suffix ./build.sh
-    FUZZER=titan TARGET=libtiff PATCH=TIF007$suffix ./build.sh
-    FUZZER=titan TARGET=libsndfile PATCH=SND017$suffix ./build.sh
-}
-
 # Function to run campaigns
 run_campaigns() {
     local suffix=$1
@@ -37,16 +26,6 @@ run_campaigns() {
 }
 
 # Run original campaigns
-build_images ""
 run_campaigns ""
-
-# Modify instrument.sh for functional campaigns
-sed -i 's/MAGMA_LOG/"(void)0; // here"/g' ../../fuzzers/titan/instrument.sh
-
-# Run functional campaigns
-build_images "-func"
 run_campaigns "-func"
-
-# Run specification campaigns
-build_images "-spec"
 run_campaigns "-spec"
