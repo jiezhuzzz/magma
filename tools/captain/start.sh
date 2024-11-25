@@ -16,14 +16,14 @@
 #       $MAGMA/run.sh)
 ##
 
-cleanup() {
-    if [ ! -t 1 ]; then
-        docker rm -f $container_id &> /dev/null
-    fi
-    exit 0
-}
+# cleanup() {
+#     if [ ! -t 1 ]; then
+#         docker rm -f $container_id &> /dev/null
+#     fi
+#     exit 0
+# }
 
-trap cleanup EXIT SIGINT SIGTERM
+# trap cleanup EXIT SIGINT SIGTERM
 
 if [ -z $FUZZER ] || [ -z $TARGET ] || [ -z $PROGRAM ] || [ -z $PATCH ]; then
     echo '$FUZZER, $TARGET, $PROGRAM, and $PATCH must be specified as' \
