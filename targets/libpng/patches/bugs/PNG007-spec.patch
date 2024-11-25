@@ -7,7 +7,7 @@ index 238f5afe7..c3faa5a67 100644
  {
     png_debug(1, "in png_read_transform_info");
 +   if (png_ptr->palette == NULL)
-+      (void)0;
++      int instrument_dummy = 0;
  
  #ifdef PNG_READ_EXPAND_SUPPORTED
     if ((png_ptr->transformations & PNG_EXPAND) != 0)
