@@ -18,7 +18,7 @@ index d84147a0..176ccf4e 100644
  static void
  ChopUpSingleUncompressedStrip(TIFF* tif)
  {
-+	(void)0; // here
++	int instrument_dummy = 0;
  	register TIFFDirectory *td = &tif->tif_dir;
  	uint64_t bytecount;
  	uint64_t offset;
