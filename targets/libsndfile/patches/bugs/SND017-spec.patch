@@ -1,5 +1,5 @@
 diff --git a/src/wavlike.c b/src/wavlike.c
-index 1c1ed2cf..f4c81193 100644
+index 1c1ed2cf..3496833a 100644
 --- a/src/wavlike.c
 +++ b/src/wavlike.c
 @@ -335,8 +335,17 @@ wavlike_read_fmt_chunk (SF_PRIVATE *psf, int fmtsize)
@@ -13,7 +13,7 @@ index 1c1ed2cf..f4c81193 100644
 +#endif
  					{
 +						if (k >= psf->sf.channels)
-+							(void)0; // here
++							printf("jiezhu");
 +#ifdef MAGMA_ENABLE_CANARIES
 +                        MAGMA_LOG("%MAGMA_BUG%", k >= psf->sf.channels);
 +#endif

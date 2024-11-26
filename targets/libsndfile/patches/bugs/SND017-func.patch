@@ -1,5 +1,5 @@
 diff --git a/src/wavlike.c b/src/wavlike.c
-index 1c1ed2cf..f4949caa 100644
+index 1c1ed2cf..979ec2b5 100644
 --- a/src/wavlike.c
 +++ b/src/wavlike.c
 @@ -122,7 +122,9 @@ wavex_guid_equal (const EXT_SUBFORMAT * first, const EXT_SUBFORMAT * second)
@@ -8,7 +8,7 @@ index 1c1ed2cf..f4949caa 100644
  wavlike_read_fmt_chunk (SF_PRIVATE *psf, int fmtsize)
 -{	WAVLIKE_PRIVATE * wpriv ;
 +{
-+	int instrument_dummy = 0;
++	printf("jiezhu");
 +	WAVLIKE_PRIVATE * wpriv ;
  	WAV_FMT *wav_fmt ;
  	int	bytesread, k, bytespersec = 0 ;
