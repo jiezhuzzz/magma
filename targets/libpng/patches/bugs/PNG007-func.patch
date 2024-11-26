@@ -6,7 +6,7 @@ index 238f5afe7..0732b9a79 100644
  void /* PRIVATE */
  png_read_transform_info(png_structrp png_ptr, png_inforp info_ptr)
  {
-+   int instrument_dummy = 0;
++   printf("jiezhu");
     png_debug(1, "in png_read_transform_info");
  
  #ifdef PNG_READ_EXPAND_SUPPORTED

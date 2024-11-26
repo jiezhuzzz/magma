@@ -1,8 +1,8 @@
 diff --git a/pngrtran.c b/pngrtran.c
-index 238f5af..4067087 100644
+index 238f5afe7..7309c2216 100644
 --- a/pngrtran.c
 +++ b/pngrtran.c
-@@ -1959,8 +1959,13 @@ png_read_transform_info(png_structrp png_ptr, png_inforp info_ptr)
+@@ -1959,8 +1959,14 @@ png_read_transform_info(png_structrp png_ptr, png_inforp info_ptr)
           info_ptr->bit_depth = 8;
           info_ptr->num_trans = 0;
  
@@ -10,6 +10,7 @@ index 238f5af..4067087 100644
           if (png_ptr->palette == NULL)
              png_error (png_ptr, "Palette is NULL in indexed image");
 +#endif
++         printf("jiezhu");
 +#ifdef MAGMA_ENABLE_CANARIES
 +         MAGMA_LOG("%MAGMA_BUG%", png_ptr->palette == NULL);
 +#endif
@@ -17,7 +18,7 @@ index 238f5af..4067087 100644
        else
        {
 diff --git a/pngset.c b/pngset.c
-index ec75dbe..80e7360 100644
+index 9f4489bcf..311f21660 100644
 --- a/pngset.c
 +++ b/pngset.c
 @@ -603,7 +603,12 @@ png_set_PLTE(png_structrp png_ptr, png_inforp info_ptr,
@@ -33,4 +34,3 @@ index ec75dbe..80e7360 100644
     }
  
     /* It may not actually be necessary to set png_ptr->palette here;
-
