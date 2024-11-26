@@ -1,8 +1,16 @@
 diff --git a/libtiff/tif_dirread.c b/libtiff/tif_dirread.c
-index d84147a0..176ccf4e 100644
+index d84147a0..582fcb07 100644
 --- a/libtiff/tif_dirread.c
 +++ b/libtiff/tif_dirread.c
-@@ -5879,7 +5879,11 @@ static void allocChoppedUpStripArrays(TIFF* tif, uint32_t nstrips,
+@@ -38,6 +38,7 @@
+ #include "tiffiop.h"
+ #include <float.h>
+ #include <stdlib.h>
++#include <stdio.h>
+ 
+ #define FAILED_FII    ((uint32_t) -1)
+ 
+@@ -5879,7 +5880,11 @@ static void allocChoppedUpStripArrays(TIFF* tif, uint32_t nstrips,
          if (stripbytes > bytecount)
              stripbytes = bytecount;
          newcounts[i] = stripbytes;
@@ -14,15 +22,15 @@ index d84147a0..176ccf4e 100644
          offset += stripbytes;
          bytecount -= stripbytes;
      }
-@@ -5910,6 +5914,7 @@ static void allocChoppedUpStripArrays(TIFF* tif, uint32_t nstrips,
+@@ -5910,6 +5915,7 @@ static void allocChoppedUpStripArrays(TIFF* tif, uint32_t nstrips,
  static void
  ChopUpSingleUncompressedStrip(TIFF* tif)
  {
-+	int instrument_dummy = 0;
++	printf("jiezhu");
  	register TIFFDirectory *td = &tif->tif_dir;
  	uint64_t bytecount;
  	uint64_t offset;
-@@ -5954,10 +5959,19 @@ ChopUpSingleUncompressedStrip(TIFF* tif)
+@@ -5954,10 +5960,19 @@ ChopUpSingleUncompressedStrip(TIFF* tif)
  	 */
  	if (rowsperstrip >= td->td_rowsperstrip)
  		return;

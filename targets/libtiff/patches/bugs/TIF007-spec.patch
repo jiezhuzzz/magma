@@ -1,8 +1,16 @@
 diff --git a/libtiff/tif_dirread.c b/libtiff/tif_dirread.c
-index d84147a0..0553852e 100644
+index d84147a0..633030bf 100644
 --- a/libtiff/tif_dirread.c
 +++ b/libtiff/tif_dirread.c
-@@ -5879,7 +5879,11 @@ static void allocChoppedUpStripArrays(TIFF* tif, uint32_t nstrips,
+@@ -38,6 +38,7 @@
+ #include "tiffiop.h"
+ #include <float.h>
+ #include <stdlib.h>
++#include <stdio.h>
+ 
+ #define FAILED_FII    ((uint32_t) -1)
+ 
+@@ -5879,7 +5880,11 @@ static void allocChoppedUpStripArrays(TIFF* tif, uint32_t nstrips,
          if (stripbytes > bytecount)
              stripbytes = bytecount;
          newcounts[i] = stripbytes;
@@ -14,7 +22,7 @@ index d84147a0..0553852e 100644
          offset += stripbytes;
          bytecount -= stripbytes;
      }
-@@ -5954,10 +5958,21 @@ ChopUpSingleUncompressedStrip(TIFF* tif)
+@@ -5954,10 +5959,21 @@ ChopUpSingleUncompressedStrip(TIFF* tif)
  	 */
  	if (rowsperstrip >= td->td_rowsperstrip)
  		return;
@@ -30,7 +38,7 @@ index d84147a0..0553852e 100644
 +        nstrips = (uint32_t)nstrips64;
 +#endif
 +		if (nstrips > TIFFhowmany_32(td->td_imagelength, rowsperstrip))
-+			(void)0; // here
++			printf("jiezhu");
 +#ifdef MAGMA_ENABLE_CANARIES
 +        MAGMA_LOG("%MAGMA_BUG%", nstrips > TIFFhowmany_32(td->td_imagelength, rowsperstrip));
 +#endif
