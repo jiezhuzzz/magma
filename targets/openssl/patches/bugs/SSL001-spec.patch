@@ -1,8 +1,8 @@
 diff --git a/crypto/asn1/a_int.c b/crypto/asn1/a_int.c
-index 19e41ec73e..692f94902c 100644
+index 19e41ec73e..cf40ce2305 100644
 --- a/crypto/asn1/a_int.c
 +++ b/crypto/asn1/a_int.c
-@@ -139,7 +139,51 @@ static size_t i2c_ibuf(const unsigned char *b, size_t blen, int neg,
+@@ -139,7 +139,53 @@ static size_t i2c_ibuf(const unsigned char *b, size_t blen, int neg,
      *p = pb;
      p += pad;       /* yes, p[0] can be written twice, but it's little
                       * price to pay for eliminated branches */
@@ -32,7 +32,9 @@ index 19e41ec73e..692f94902c 100644
 +            *(p--) = 0;
 +            n--;
 +            i--;
-+            printf("jiezhu");
++            if (i == 0) {
++                printf("jiezhu");
++            }
 +#ifdef MAGMA_ENABLE_CANARIES
 +            /**
 +             * The value of `i` determines how many more iterations this loop
