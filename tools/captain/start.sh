@@ -60,12 +60,12 @@ if [ -t 1 ]; then
         $flag_aff $flag_ep "$IMG_NAME"
 else
     container_id=$(
-    docker run -dt $flag_volume \ 
-        --cap-add=SYS_PTRACE --security-opt seccomp=unconfined \
-        --env=PROGRAM="$PROGRAM" --env=ARGS="$ARGS" \
-        --env=FUZZARGS="$FUZZARGS" --env=POLL="$POLL" --env=TIMEOUT="$TIMEOUT" \
-        --network=none \
-        $flag_aff $flag_ep "$IMG_NAME"
+        docker run -dt $flag_volume \
+            --cap-add=SYS_PTRACE --security-opt seccomp=unconfined \
+            --env=PROGRAM="$PROGRAM" --env=ARGS="$ARGS" \
+            --env=FUZZARGS="$FUZZARGS" --env=POLL="$POLL" --env=TIMEOUT="$TIMEOUT" \
+            --network=none \
+            $flag_aff $flag_ep "$IMG_NAME"
     )
     container_id=$(cut -c-12 <<< $container_id)
     echo_time "Container for $FUZZER/$TARGET/$PROGRAM/$PATCH started in $container_id"
