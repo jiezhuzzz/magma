@@ -1,0 +1,37 @@
+diff --git a/libtiff/tif_dirread.c b/libtiff/tif_dirread.c
+index d84147a0..bb661668 100644
+--- a/libtiff/tif_dirread.c
++++ b/libtiff/tif_dirread.c
+@@ -37,6 +37,7 @@
+ #include "tiffconf.h"
+ #include "tiffiop.h"
+ #include <float.h>
++#include <stdio.h>
+ #include <stdlib.h>
+ 
+ #define FAILED_FII    ((uint32_t) -1)
+@@ -5960,6 +5961,7 @@ ChopUpSingleUncompressedStrip(TIFF* tif)
+ 
+         /* If we are going to allocate a lot of memory, make sure that the */
+         /* file is as big as needed */
++#ifdef MAGMA_ENABLE_FIXES
+         if( tif->tif_mode == O_RDONLY &&
+             nstrips > 1000000 &&
+             (offset >= TIFFGetFileSize(tif) ||
+@@ -5967,6 +5969,16 @@ ChopUpSingleUncompressedStrip(TIFF* tif)
+         {
+             return;
+         }
++#endif
++		if (tif->tif_mode == O_RDONLY && nstrips > 1000000 && (offset >= TIFFGetFileSize(tif) || stripbytes * (nstrips - 1) > (TIFFGetFileSize(tif) - offset))) {
++			printf("jiezhu");
++		}
++#ifdef MAGMA_ENABLE_CANARIES
++        MAGMA_LOG("%MAGMA_BUG%", MAGMA_AND(tif->tif_mode == O_RDONLY, \
++	        MAGMA_AND(nstrips > 1000000, \
++	        MAGMA_OR(offset >= TIFFGetFileSize(tif), \
++	         stripbytes * (nstrips - 1) > (TIFFGetFileSize(tif) - offset)))));
++#endif
+ 
+         allocChoppedUpStripArrays(tif, nstrips, stripbytes, rowsperstrip);
+ }

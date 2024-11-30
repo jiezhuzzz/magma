@@ -78,12 +78,15 @@ FUZZERS=(titan)
 # (default: all targets)
 # afl_TARGETS=(libpng libtiff libxml2)
 titan_TARGETS=(libpng libtiff)
+titan_TARGETS=(libsndfile openssl)
 
 # [fuzzer_target_PATCHES]: an array of patch names (from magma/patches/*) to use
 # when fuzzing `target` with `fuzzer`
 # afl_libtiff_PATCHES=(libtiff-20240320)
 titan_libtiff_PATCHES=(TIF007-func TIF007-spec)
 titan_libpng_PATCHES=(PNG007-func PNG007-spec)
+titan_libsndfile_PATCHES=(SND017-func SND017-spec)
+titan_openssl_PATCHES=(SSL001-func SSL001-spec)
 
 # [fuzzer_target_PROGRAMS]: an array of program names (from
 # magma/targets/target/configrc) to use as execution drivers when fuzzing the
@@ -91,6 +94,8 @@ titan_libpng_PATCHES=(PNG007-func PNG007-spec)
 # afl_libtiff_PROGRAMS=(tiffcp)
 titan_libtiff_PROGRAMS=(tiff_read_rgba_fuzzer)
 titan_libpng_PROGRAMS=(libpng_read_fuzzer)
+titan_libsndfile_PROGRAMS=(sndfile_fuzzer)
+titan_openssl_PROGRAMS=(asn1parse)
 
 # [fuzzer_target_FUZZARGS]: a string containing fuzzer/target-specific arguments
 # when fuzzing `target` with `fuzzer`
