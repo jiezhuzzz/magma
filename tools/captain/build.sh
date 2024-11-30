@@ -15,8 +15,10 @@ if [ -z $FUZZER ] || [ -z $TARGET ] || [ -z $PATCH ]; then
     echo '$FUZZER, $TARGET, and $PATCH must be specified as environment variables.'
     exit 1
 fi
+
 lower_patch=$(echo "$PATCH" | tr '[:upper:]' '[:lower:]')
 IMG_NAME="magma/$FUZZER/$TARGET/$lower_patch"
+
 MAGMA=${MAGMA:-"$(cd "$(dirname "${BASH_SOURCE[0]}")/../../" >/dev/null 2>&1 \
     && pwd)"}
 source "$MAGMA/tools/captain/common.sh"
