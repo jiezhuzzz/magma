@@ -1,5 +1,17 @@
+diff --git a/contrib/dbs/xtiff/xtiff.c b/contrib/dbs/xtiff/xtiff.c
+index a9518f83..41e1eb7d 100644
+--- a/contrib/dbs/xtiff/xtiff.c
++++ b/contrib/dbs/xtiff/xtiff.c
+@@ -981,6 +981,7 @@ void
+ PageProc(direction)
+     int direction;
+ {
++    printf("jiezhu");
+     XEvent fake_event;
+     Arg args[4];
+ 
 diff --git a/libtiff/tif_dirread.c b/libtiff/tif_dirread.c
-index d84147a0..03a9e2a1 100644
+index d84147a0..43e068fb 100644
 --- a/libtiff/tif_dirread.c
 +++ b/libtiff/tif_dirread.c
 @@ -37,6 +37,7 @@
@@ -10,15 +22,7 @@ index d84147a0..03a9e2a1 100644
  #include <stdlib.h>
  
  #define FAILED_FII    ((uint32_t) -1)
-@@ -3579,6 +3580,7 @@ static int ByteCountLooksBad(TIFF* tif)
- int
- TIFFReadDirectory(TIFF* tif)
- {
-+	printf("jiezhu");
- 	static const char module[] = "TIFFReadDirectory";
- 	TIFFDirEntry* dir;
- 	uint16_t dircount;
-@@ -5909,7 +5911,7 @@ static void allocChoppedUpStripArrays(TIFF* tif, uint32_t nstrips,
+@@ -5909,7 +5910,7 @@ static void allocChoppedUpStripArrays(TIFF* tif, uint32_t nstrips,
   */
  static void
  ChopUpSingleUncompressedStrip(TIFF* tif)
@@ -27,7 +31,7 @@ index d84147a0..03a9e2a1 100644
  	register TIFFDirectory *td = &tif->tif_dir;
  	uint64_t bytecount;
  	uint64_t offset;
-@@ -5960,6 +5962,7 @@ ChopUpSingleUncompressedStrip(TIFF* tif)
+@@ -5960,6 +5961,7 @@ ChopUpSingleUncompressedStrip(TIFF* tif)
  
          /* If we are going to allocate a lot of memory, make sure that the */
          /* file is as big as needed */
@@ -35,7 +39,7 @@ index d84147a0..03a9e2a1 100644
          if( tif->tif_mode == O_RDONLY &&
              nstrips > 1000000 &&
              (offset >= TIFFGetFileSize(tif) ||
-@@ -5967,6 +5970,13 @@ ChopUpSingleUncompressedStrip(TIFF* tif)
+@@ -5967,6 +5969,13 @@ ChopUpSingleUncompressedStrip(TIFF* tif)
          {
              return;
          }
