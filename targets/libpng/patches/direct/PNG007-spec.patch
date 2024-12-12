@@ -11,7 +11,7 @@ index 238f5afe7..6ce37d36e 100644
              png_error (png_ptr, "Palette is NULL in indexed image");
 +#endif
 +      if (png_ptr->palette == NULL)
-+         printf("jiezhu");
++         printf("MAGMA_RECORD");
 +#ifdef MAGMA_ENABLE_CANARIES
 +         MAGMA_LOG("%MAGMA_BUG%", png_ptr->palette == NULL);
 +#endif
