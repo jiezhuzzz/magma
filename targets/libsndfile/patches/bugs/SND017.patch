@@ -1,8 +1,8 @@
 diff --git a/src/wavlike.c b/src/wavlike.c
-index 1c1ed2cf..8b11c240 100644
+index b59c684..bbfab02 100644
 --- a/src/wavlike.c
 +++ b/src/wavlike.c
-@@ -335,8 +335,16 @@ wavlike_read_fmt_chunk (SF_PRIVATE *psf, int fmtsize)
+@@ -335,8 +335,15 @@ wavlike_read_fmt_chunk (SF_PRIVATE *psf, int fmtsize)
  					/* Terminate the buffer we're going to append_snprintf into. */
  					buffer [0] = 0 ;
  
@@ -12,7 +12,6 @@ index 1c1ed2cf..8b11c240 100644
 +					for (bit = k = 0 ; bit < ARRAY_LEN (channel_mask_bits) ; bit++)
 +#endif
  					{
-+						printf("jiezhu");
 +#ifdef MAGMA_ENABLE_CANARIES
 +                        MAGMA_LOG("%MAGMA_BUG%", k >= psf->sf.channels);
 +#endif
