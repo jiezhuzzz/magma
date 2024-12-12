@@ -20,7 +20,7 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
-patch_file="$TARGET/patches/bugs/$1.patch"
+patch_file="$TARGET/patches/direct/$1.patch"
 if [ ! -f "$patch_file" ]; then
     echo "Patch file $patch_file not found."
     exit 1
