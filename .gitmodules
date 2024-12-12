@@ -1,0 +1,4 @@
+[submodule "fuzzers/titan"]
+	path = fuzzers/titan
+	url = git@github.com:jiezhuzzz/Titan.git
+	branch = MAGMA_RECORD
