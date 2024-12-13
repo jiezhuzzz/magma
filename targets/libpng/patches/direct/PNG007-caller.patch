@@ -1,0 +1,91 @@
+diff --git a/contrib/libtests/makepng.c b/contrib/libtests/makepng.c
+index 088df531a..d747d5f12 100644
+--- a/contrib/libtests/makepng.c
++++ b/contrib/libtests/makepng.c
+@@ -777,6 +777,11 @@ write_png(const char **name, FILE *fp, int color_type, int bit_depth,
+    volatile png_infop info_ptr = NULL;
+    volatile png_bytep row = NULL;
+ 
++   // Add MAGMA_LOG macro here, as close to the function entry as possible
++   if (png_ptr != NULL) {
++      MAGMA_LOG("MAGMA_RECORD_write_png", png_ptr->palette == NULL);
++   }
++
+    if (png_ptr == NULL)
+    {
+       fprintf(stderr, "makepng: OOM allocating write structure\n");
+diff --git a/contrib/libtests/pngvalid.c b/contrib/libtests/pngvalid.c
+index 86e2f7516..2e911a753 100644
+--- a/contrib/libtests/pngvalid.c
++++ b/contrib/libtests/pngvalid.c
+@@ -3647,6 +3647,7 @@ init_standard_palette(png_store *ps, png_structp pp, png_infop pi, int npalette,
+ {
+    store_palette_entry *ppal = make_standard_palette(ps, npalette, do_tRNS);
+ 
++   MAGMA_LOG("MAGMA_RECORD_init_standard_palette", npalette <= 0 || npalette > 256 || ppal == NULL);
+    {
+       int i;
+       png_color palette[256];
+diff --git a/pngread.c b/pngread.c
+index 8fa7d9f16..a47dec586 100644
+--- a/pngread.c
++++ b/pngread.c
+@@ -267,6 +267,7 @@ void PNGAPI
+ png_read_update_info(png_structrp png_ptr, png_inforp info_ptr)
+ {
+    png_debug(1, "in png_read_update_info");
++   MAGMA_LOG("MAGMA_RECORD_png_read_update_info", png_ptr->palette == NULL || png_ptr == NULL || info_ptr == NULL);
+ 
+    if (png_ptr != NULL)
+    {
+diff --git a/pngrtran.c b/pngrtran.c
+index 238f5afe7..252c28d6e 100644
+--- a/pngrtran.c
++++ b/pngrtran.c
+@@ -1939,6 +1939,7 @@ png_init_read_transformations(png_structrp png_ptr)
+ void /* PRIVATE */
+ png_read_transform_info(png_structrp png_ptr, png_inforp info_ptr)
+ {
++   MAGMA_LOG("MAGMA_RECORD_png_read_transform_info", (info_ptr->color_type == PNG_COLOR_TYPE_PALETTE && png_ptr->palette == NULL));
+    png_debug(1, "in png_read_transform_info");
+ 
+ #ifdef PNG_READ_EXPAND_SUPPORTED
+@@ -1959,8 +1960,13 @@ png_read_transform_info(png_structrp png_ptr, png_inforp info_ptr)
+          info_ptr->bit_depth = 8;
+          info_ptr->num_trans = 0;
+ 
++#ifdef MAGMA_ENABLE_FIXES
+          if (png_ptr->palette == NULL)
+             png_error (png_ptr, "Palette is NULL in indexed image");
++#endif
++#ifdef MAGMA_ENABLE_CANARIES
++         MAGMA_LOG("%MAGMA_BUG%", png_ptr->palette == NULL);
++#endif
+       }
+       else
+       {
+diff --git a/pngset.c b/pngset.c
+index 9f4489bcf..50f0cecf0 100644
+--- a/pngset.c
++++ b/pngset.c
+@@ -572,6 +572,7 @@ void PNGAPI
+ png_set_PLTE(png_structrp png_ptr, png_inforp info_ptr,
+     png_const_colorp palette, int num_palette)
+ {
++   MAGMA_LOG("MAGMA_RECORD_png_set_PLTE", (num_palette > 0 && palette == NULL));
+ 
+    png_uint_32 max_palette_length;
+ 
+@@ -603,7 +604,12 @@ png_set_PLTE(png_structrp png_ptr, png_inforp info_ptr,
+ #        endif
+       ))
+    {
++#ifdef MAGMA_ENABLE_FIXES
+       png_error(png_ptr, "Invalid palette");
++#else
++      png_chunk_report(png_ptr, "Invalid palette", PNG_CHUNK_ERROR);
++      return;
++#endif
+    }
+ 
+    /* It may not actually be necessary to set png_ptr->palette here;
