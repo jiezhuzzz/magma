@@ -2,3 +2,6 @@
 	path = fuzzers/titan
 	url = git@github.com:jiezhuzzz/Titan.git
 	branch = MAGMA_RECORD
+[submodule "fuzzers/aflgo"]
+	path = fuzzers/aflgo
+	url = git@github.com:jiezhuzzz/aflgo.git
