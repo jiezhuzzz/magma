@@ -1,0 +1,103 @@
+diff --git a/pngpread.c b/pngpread.c
+index e283627b7..261d282e9 100644
+--- a/pngpread.c
++++ b/pngpread.c
+@@ -179,6 +179,10 @@ png_push_read_chunk(png_structrp png_ptr, png_inforp info_ptr)
+     */
+    if ((png_ptr->mode & PNG_HAVE_CHUNK_HEADER) == 0)
+    {
++      if (png_ptr->push_length > PNG_MAX_LENGTH)
++      {
++         MAGMA_LOG("MAGMA_RECORD_png_push_read_chunk", 1);
++      }
+       png_byte chunk_length[4];
+       png_byte chunk_tag[4];
+ 
+diff --git a/pngread.c b/pngread.c
+index 8fa7d9f16..b7848ceea 100644
+--- a/pngread.c
++++ b/pngread.c
+@@ -107,7 +107,10 @@ png_read_info(png_structrp png_ptr, png_inforp info_ptr)
+    {
+       png_uint_32 length = png_read_chunk_header(png_ptr);
+       png_uint_32 chunk_name = png_ptr->chunk_name;
+-
++      if (chunk_name == png_PLTE && !((png_ptr->mode & PNG_HAVE_IDAT) != 0))
++      {
++         MAGMA_LOG("MAGMA_RECORD_png_read_info", 1);
++      }
+       /* IDAT logic needs to happen here to simplify getting the two flags
+        * right.
+        */
+@@ -774,6 +777,12 @@ png_read_end(png_structrp png_ptr, png_inforp info_ptr)
+    if (png_ptr == NULL)
+       return;
+ 
++   if (png_ptr->color_type == PNG_COLOR_TYPE_PALETTE &&
++       png_ptr->num_palette_max > png_ptr->num_palette)
++   {
++      MAGMA_LOG("MAGMA_RECORD_palette_index_exceed", 1);
++   }
++
+    /* If png_read_end is called in the middle of reading the rows there may
+     * still be pending IDAT data and an owned zstream.  Deal with this here.
+     */
+@@ -788,7 +797,6 @@ png_read_end(png_structrp png_ptr, png_inforp info_ptr)
+        png_ptr->num_palette_max > png_ptr->num_palette)
+       png_benign_error(png_ptr, "Read palette index exceeding num_palette");
+ #endif
+-
+    do
+    {
+       png_uint_32 length = png_read_chunk_header(png_ptr);
+diff --git a/pngrutil.c b/pngrutil.c
+index 2694fa72a..86ecfcd2b 100644
+--- a/pngrutil.c
++++ b/pngrutil.c
+@@ -983,8 +983,14 @@ png_handle_PLTE(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+    else
+       max_palette_length = PNG_MAX_PALETTE_LENGTH;
+ 
++#ifdef MAGMA_ENABLE_FIXES
+    if (num > max_palette_length)
+       num = max_palette_length;
++#endif
++
++#ifdef MAGMA_ENABLE_CANARIES
++   MAGMA_LOG("%MAGMA_BUG%", num > max_palette_length);
++#endif
+ 
+ #ifdef PNG_POINTER_INDEXING_SUPPORTED
+    for (i = 0, pal_ptr = palette; i < num; i++, pal_ptr++)
+diff --git a/pngset.c b/pngset.c
+index 9f4489bcf..ada620d3a 100644
+--- a/pngset.c
++++ b/pngset.c
+@@ -583,7 +583,11 @@ png_set_PLTE(png_structrp png_ptr, png_inforp info_ptr,
+    max_palette_length = (info_ptr->color_type == PNG_COLOR_TYPE_PALETTE) ?
+       (1 << info_ptr->bit_depth) : PNG_MAX_PALETTE_LENGTH;
+ 
++#ifdef MAGMA_ENABLE_FIXES
+    if (num_palette < 0 || num_palette > (int) max_palette_length)
++#else
++   if (num_palette < 0 || num_palette > PNG_MAX_PALETTE_LENGTH)
++#endif
+    {
+       if (info_ptr->color_type == PNG_COLOR_TYPE_PALETTE)
+          png_error(png_ptr, "Invalid palette length");
+diff --git a/pngwrite.c b/pngwrite.c
+index d2867a4b2..757798b6c 100644
+--- a/pngwrite.c
++++ b/pngwrite.c
+@@ -1786,7 +1786,10 @@ png_image_set_PLTE(png_image_write_control *display)
+    /* NOTE: the caller must check for cmap != NULL and entries != 0 */
+    png_uint_32 format = image->format;
+    unsigned int channels = PNG_IMAGE_SAMPLE_CHANNELS(format);
+-
++   if (entries > 255)
++   {
++      MAGMA_LOG("MAGMA_RECORD_png_image_set_PLTE", 1);
++   }
+ #   if defined(PNG_FORMAT_BGR_SUPPORTED) &&\
+       defined(PNG_SIMPLIFIED_WRITE_AFIRST_SUPPORTED)
+       int afirst = (format & PNG_FORMAT_FLAG_AFIRST) != 0 &&

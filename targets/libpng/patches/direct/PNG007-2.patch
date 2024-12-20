@@ -1,0 +1,115 @@
+diff --git a/pngpread.c b/pngpread.c
+index e283627b7..18ea139e4 100644
+--- a/pngpread.c
++++ b/pngpread.c
+@@ -195,6 +195,11 @@ png_push_read_chunk(png_structrp png_ptr, png_inforp info_ptr)
+ 
+    chunk_name = png_ptr->chunk_name;
+ 
++   if (chunk_name == png_PLTE && png_ptr->push_length > 0)
++   {
++      MAGMA_LOG("MAGMA_RECORD_png_push_read_chunk", 1);
++   }
++
+    if (chunk_name == png_IDAT)
+    {
+       if ((png_ptr->mode & PNG_AFTER_IDAT) != 0)
+diff --git a/pngread.c b/pngread.c
+index 8fa7d9f16..ef1996ea5 100644
+--- a/pngread.c
++++ b/pngread.c
+@@ -107,7 +107,10 @@ png_read_info(png_structrp png_ptr, png_inforp info_ptr)
+    {
+       png_uint_32 length = png_read_chunk_header(png_ptr);
+       png_uint_32 chunk_name = png_ptr->chunk_name;
+-
++      if (chunk_name == png_PLTE && (png_ptr->mode & PNG_HAVE_IHDR) != 0 && (png_ptr->mode & PNG_HAVE_PLTE) == 0)
++      {
++         MAGMA_LOG("MAGMA_RECORD_png_read_info", 1);
++      }
+       /* IDAT logic needs to happen here to simplify getting the two flags
+        * right.
+        */
+@@ -793,7 +796,10 @@ png_read_end(png_structrp png_ptr, png_inforp info_ptr)
+    {
+       png_uint_32 length = png_read_chunk_header(png_ptr);
+       png_uint_32 chunk_name = png_ptr->chunk_name;
+-
++      if (chunk_name == png_PLTE && png_ptr->num_palette_max > png_ptr->num_palette)
++      {
++         MAGMA_LOG("MAGMA_RECORD_png_read_end_PLTE", 1);
++      }
+       if (chunk_name != png_IDAT)
+          png_ptr->mode |= PNG_HAVE_CHUNK_AFTER_IDAT;
+ 
+@@ -1058,7 +1064,10 @@ png_read_png(png_structrp png_ptr, png_inforp info_ptr,
+    png_read_info(png_ptr, info_ptr);
+    if (info_ptr->height > PNG_UINT_32_MAX/(sizeof (png_bytep)))
+       png_error(png_ptr, "Image is too high to process with png_read_png()");
+-
++   if (info_ptr->valid & PNG_INFO_IDAT)
++   {
++      MAGMA_LOG("MAGMA_RECORD_png_read_png", 1);
++   }
+    /* -------------- image transformations start here ------------------- */
+    /* libpng 1.6.10: add code to cause a png_app_error if a selected TRANSFORM
+     * is not implemented.  This will only happen in de-configured (non-default)
+@@ -3151,7 +3160,10 @@ png_image_read_colormapped(png_voidp argument)
+       passes = png_set_interlace_handling(png_ptr);
+ 
+    png_read_update_info(png_ptr, info_ptr);
+-
++   if ((info_ptr->color_type == PNG_COLOR_TYPE_PALETTE && png_ptr->palette == NULL) || (display->colormap_processing != PNG_CMAP_NONE && info_ptr->color_type == PNG_COLOR_TYPE_RGB && png_ptr->screen_gamma != PNG_GAMMA_sRGB))
++   {
++      MAGMA_LOG("MAGMA_RECORD_png_image_read_colormapped", 1);
++   }
+    /* The expected output can be deduced from the colormap_processing option. */
+    switch (display->colormap_processing)
+    {
+@@ -3682,7 +3694,10 @@ png_image_read_direct(png_voidp argument)
+    int do_local_compose = 0;
+    int do_local_background = 0; /* to avoid double gamma correction bug */
+    int passes = 0;
+-
++   if (image->format & PNG_FORMAT_FLAG_COLOR)
++   {
++      MAGMA_LOG("MAGMA_RECORD_png_image_read_direct", 1);
++   }
+    /* Add transforms to ensure the correct output format is produced then check
+     * that the required implementation support is there.  Always expand; always
+     * need 8 bits minimum, no palette and expanded tRNS.
+diff --git a/pngrtran.c b/pngrtran.c
+index 238f5afe7..a00a63b2b 100644
+--- a/pngrtran.c
++++ b/pngrtran.c
+@@ -1959,8 +1959,13 @@ png_read_transform_info(png_structrp png_ptr, png_inforp info_ptr)
+          info_ptr->bit_depth = 8;
+          info_ptr->num_trans = 0;
+ 
++#ifdef MAGMA_ENABLE_FIXES
+          if (png_ptr->palette == NULL)
+             png_error (png_ptr, "Palette is NULL in indexed image");
++#endif
++#ifdef MAGMA_ENABLE_CANARIES
++         MAGMA_LOG("%MAGMA_BUG%", png_ptr->palette == NULL);
++#endif
+       }
+       else
+       {
+diff --git a/pngset.c b/pngset.c
+index 9f4489bcf..311f21660 100644
+--- a/pngset.c
++++ b/pngset.c
+@@ -603,7 +603,12 @@ png_set_PLTE(png_structrp png_ptr, png_inforp info_ptr,
+ #        endif
+       ))
+    {
++#ifdef MAGMA_ENABLE_FIXES
+       png_error(png_ptr, "Invalid palette");
++#else
++      png_chunk_report(png_ptr, "Invalid palette", PNG_CHUNK_ERROR);
++      return;
++#endif
+    }
+ 
+    /* It may not actually be necessary to set png_ptr->palette here;

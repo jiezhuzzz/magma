@@ -1,0 +1,87 @@
+diff --git a/contrib/libtests/pngimage.c b/contrib/libtests/pngimage.c
+index be176b2bc..6a24b0876 100644
+--- a/contrib/libtests/pngimage.c
++++ b/contrib/libtests/pngimage.c
+@@ -873,6 +873,12 @@ read_png(struct display *dp, struct buffer *bp, const char *operation,
+    /* This cleans out any previous read and sets operation and transforms to
+     * empty.
+     */
++   if (png_ptr->color_type == PNG_COLOR_TYPE_PALETTE &&
++       png_ptr->mode & PNG_HAVE_IDAT == 0 &&
++       info_ptr->bit_depth > (int)max_palette_length)
++   {
++      MAGMA_LOG("MAGMA_RECORD_read_png", 1);
++   }
+    display_clean_read(dp);
+ 
+    if (operation != NULL) /* else this is a verify and do not overwrite info */
+diff --git a/pngread.c b/pngread.c
+index 8fa7d9f16..91230beb5 100644
+--- a/pngread.c
++++ b/pngread.c
+@@ -1414,7 +1414,10 @@ png_image_read_header(png_voidp argument)
+    png_set_benign_errors(png_ptr, 1/*warn*/);
+ #endif
+    png_read_info(png_ptr, info_ptr);
+-
++   if (info_ptr->num_palette > (1 << png_ptr->bit_depth))
++   {
++      MAGMA_LOG("MAGMA_RECORD_png_image_read_header", 1);
++   }
+    /* Do this the fast way; just read directly out of png_struct. */
+    image->width = png_ptr->width;
+    image->height = png_ptr->height;
+diff --git a/pngrutil.c b/pngrutil.c
+index 2694fa72a..86ecfcd2b 100644
+--- a/pngrutil.c
++++ b/pngrutil.c
+@@ -983,8 +983,14 @@ png_handle_PLTE(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+    else
+       max_palette_length = PNG_MAX_PALETTE_LENGTH;
+ 
++#ifdef MAGMA_ENABLE_FIXES
+    if (num > max_palette_length)
+       num = max_palette_length;
++#endif
++
++#ifdef MAGMA_ENABLE_CANARIES
++   MAGMA_LOG("%MAGMA_BUG%", num > max_palette_length);
++#endif
+ 
+ #ifdef PNG_POINTER_INDEXING_SUPPORTED
+    for (i = 0, pal_ptr = palette; i < num; i++, pal_ptr++)
+diff --git a/pngset.c b/pngset.c
+index 9f4489bcf..ada620d3a 100644
+--- a/pngset.c
++++ b/pngset.c
+@@ -583,7 +583,11 @@ png_set_PLTE(png_structrp png_ptr, png_inforp info_ptr,
+    max_palette_length = (info_ptr->color_type == PNG_COLOR_TYPE_PALETTE) ?
+       (1 << info_ptr->bit_depth) : PNG_MAX_PALETTE_LENGTH;
+ 
++#ifdef MAGMA_ENABLE_FIXES
+    if (num_palette < 0 || num_palette > (int) max_palette_length)
++#else
++   if (num_palette < 0 || num_palette > PNG_MAX_PALETTE_LENGTH)
++#endif
+    {
+       if (info_ptr->color_type == PNG_COLOR_TYPE_PALETTE)
+          png_error(png_ptr, "Invalid palette length");
+diff --git a/pngwrite.c b/pngwrite.c
+index d2867a4b2..c5479fe65 100644
+--- a/pngwrite.c
++++ b/pngwrite.c
+@@ -1936,7 +1936,13 @@ png_image_write_main(png_voidp argument)
+    int linear = !colormap && (format & PNG_FORMAT_FLAG_LINEAR); /* input */
+    int alpha = !colormap && (format & PNG_FORMAT_FLAG_ALPHA);
+    int write_16bit = linear && (display->convert_to_8bit == 0);
+-
++   if ((format & PNG_FORMAT_FLAG_COLORMAP) != 0)
++   {
++      if (image->colormap_entries > 256)
++      {
++         MAGMA_LOG("MAGMA_RECORD_png_image_write_main", 1);
++      }
++   }
+ #   ifdef PNG_BENIGN_ERRORS_SUPPORTED
+       /* Make sure we error out on any bad situation */
+       png_set_benign_errors(png_ptr, 0/*error*/);
