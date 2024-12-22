@@ -5,6 +5,7 @@
 import argparse
 from pathlib import Path
 from typing import Dict, List
+import os
 
 # Map of target names to their associated fuzzing programs
 PROGRAMS: Dict[str, List[str]] = {
@@ -43,6 +44,7 @@ def generate_captain_config(args: argparse.Namespace) -> None:
     config = [
         f"WORKDIR={args.workdir}",
         f"REPEAT={args.repeat}",
+        f"WORKERS={int(os.cpu_count() * 0.9)}",
         f"TIMEOUT={args.timeout}",
         f"POLL={args.poll}",
         f"FUZZERS=({' '.join(args.fuzzers)})"
