@@ -19,7 +19,8 @@ fi
 
 base_patch_file="$TARGET/patches/bugs/${1%%-*}.patch"
 if [ ! -f "$base_patch_file" ]; then
-    
+    echo "Patch file $base_patch_file not found."
+    exit 1
 fi
 patch -p1 -d "$TARGET/repo" < "$base_patch_file"
 
