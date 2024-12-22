@@ -105,10 +105,10 @@ start_campaign()
         export SHARED="$CAMPAIGN_CACHEDIR/$CACHECID"
         mkdir -p "$SHARED" && chmod 777 "$SHARED"
 
-        echo_time "Container $FUZZER/$TARGET/$PROGRAM/$ARCID started on CPU $AFFINITY"
+        echo_time "Container $FUZZER/$TARGET/$PROGRAM/$PATCH/$ARCID started on CPU $AFFINITY"
         "$MAGMA"/tools/captain/start.sh &> \
-            "${LOGDIR}/${FUZZER}_${TARGET}_${PROGRAM}_${ARCID}_container.log"
-        echo_time "Container $FUZZER/$TARGET/$PROGRAM/$ARCID stopped"
+            "${LOGDIR}/${FUZZER}_${TARGET}_${PROGRAM}_${PATCH}_${ARCID}_container.log"
+        echo_time "Container $FUZZER/$TARGET/$PROGRAM/$PATCH/$ARCID stopped"
 
         if [ ! -z $POC_EXTRACT ]; then
             "$MAGMA"/tools/captain/extract.sh
@@ -127,10 +127,10 @@ start_campaign()
     export -f launch_campaign
 
     while : ; do
-        export CAMPAIGN_CACHEDIR="$CACHEDIR/$FUZZER/$TARGET/$PROGRAM"
+        export CAMPAIGN_CACHEDIR="$CACHEDIR/$FUZZER/$TARGET/$PROGRAM/$PATCH"
         export CACHECID=$(mutex $MUX_CID \
                 get_next_cid "$CAMPAIGN_CACHEDIR")
-        export CAMPAIGN_ARDIR="$ARDIR/$FUZZER/$TARGET/$PROGRAM"
+        export CAMPAIGN_ARDIR="$ARDIR/$FUZZER/$TARGET/$PROGRAM/$PATCH"
         export ARCID=$(mutex $MUX_CID \
                 get_next_cid "$CAMPAIGN_ARDIR")
 
@@ -242,27 +242,32 @@ for FUZZER in "${FUZZERS[@]}"; do
     for TARGET in "${TARGETS[@]}"; do
         export TARGET
 
-        export FUZZARGS="$(get_var_or_default $FUZZER $TARGET 'FUZZARGS')"
+        PATCHES=($(get_var_or_default $FUZZER $TARGET 'PATCHES'))
+        for PATCH in "${PATCHES[@]}"; do
+            export PATCH
 
-        # build the Docker image
-        IMG_NAME="magma/$FUZZER/$TARGET"
-        echo_time "Building $IMG_NAME"
-        if ! "$MAGMA"/tools/captain/build.sh &> \
-            "${LOGDIR}/${FUZZER}_${TARGET}_build.log"; then
-            echo_time "Failed to build $IMG_NAME. Check build log for info."
-            continue
-        fi
+            export FUZZARGS="$(get_var_or_default $FUZZER $TARGET 'FUZZARGS')"
 
-        PROGRAMS=($(get_var_or_default $FUZZER $TARGET 'PROGRAMS'))
-        for PROGRAM in "${PROGRAMS[@]}"; do
-            export PROGRAM
-            export ARGS="$(get_var_or_default $FUZZER $TARGET $PROGRAM 'ARGS')"
+            # build the Docker image
+            IMG_NAME="magma/$FUZZER/$TARGET/$PATCH"
+            echo_time "Building $IMG_NAME"
+            if ! "$MAGMA"/tools/captain/build.sh &> \
+                "${LOGDIR}/${FUZZER}_${TARGET}_${PATCH}_build.log"; then
+                echo_time "Failed to build $IMG_NAME. Check build log for info."
+                continue
+            fi
 
-            echo_time "Starting campaigns for $PROGRAM $ARGS"
-            for ((i=0; i<$REPEAT; i++)); do
-                export NUMWORKERS="$(get_var_or_default $FUZZER 'CAMPAIGN_WORKERS')"
-                export AFFINITY=$(allocate_workers)
-                start_ex &
+            PROGRAMS=($(get_var_or_default $FUZZER $TARGET 'PROGRAMS'))
+            for PROGRAM in "${PROGRAMS[@]}"; do
+                export PROGRAM
+                export ARGS="$(get_var_or_default $FUZZER $TARGET $PROGRAM 'ARGS')"
+
+                echo_time "Starting campaigns for $PROGRAM $ARGS"
+                for ((i=0; i<$REPEAT; i++)); do
+                    export NUMWORKERS="$(get_var_or_default $FUZZER 'CAMPAIGN_WORKERS')"
+                    export AFFINITY=$(allocate_workers)
+                    start_ex &
+                done
             done
         done
     done

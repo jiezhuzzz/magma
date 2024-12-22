@@ -11,11 +11,14 @@
 #       unset)
 ##
 
-if [ -z $FUZZER ] || [ -z $TARGET ]; then
-    echo '$FUZZER and $TARGET must be specified as environment variables.'
+if [ -z $FUZZER ] || [ -z $TARGET ] || [ -z $PATCH ]; then
+    echo '$FUZZER, $TARGET, and $PATCH must be specified as environment variables.'
     exit 1
 fi
-IMG_NAME="magma/$FUZZER/$TARGET"
+
+lower_patch=$(echo "$PATCH" | tr '[:upper:]' '[:lower:]')
+IMG_NAME="magma/$FUZZER/$TARGET/$lower_patch"
+
 MAGMA=${MAGMA:-"$(cd "$(dirname "${BASH_SOURCE[0]}")/../../" >/dev/null 2>&1 \
     && pwd)"}
 source "$MAGMA/tools/captain/common.sh"
@@ -41,10 +44,10 @@ if [ ! -z $HARDEN ]; then
     harden_flag="--build-arg harden=1"
 fi
 
-set -x
-docker build -t "$IMG_NAME" \
+${CONTAINER_ENGINE:-docker} build -t "$IMG_NAME" \
     --build-arg fuzzer_name="$FUZZER" \
     --build-arg target_name="$TARGET" \
+    --build-arg patch_name="$PATCH" \
     --build-arg USER_ID=$(id -u $USER) \
     --build-arg GROUP_ID=$(id -g $USER) \
     $mode_flag $isan_flag $harden_flag \

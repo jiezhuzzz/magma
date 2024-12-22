@@ -4,7 +4,8 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-#define FILESIZE 2048
+#define FILESIZE 4096
+#define CANARY_NAME_LEN 64
 // The `2` in the denominator is for splitting the region between producer and
 // consumer buffers. It has nothing to do with CANARY_TYPE_COUNT.
 #define BUFFERLEN ((FILESIZE-sizeof(max_align_t))/sizeof(canary_t)/2)
@@ -17,7 +18,7 @@ typedef enum {
 typedef unsigned long long canary_storage_t;
 
 typedef struct {
-    char name[16];
+    char name[CANARY_NAME_LEN];
     union {
         struct {
             canary_storage_t reached;

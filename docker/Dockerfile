@@ -64,7 +64,8 @@ COPY --chown=magma:magma ${magma_root}/${target_path} ${TARGET}/
 RUN ${TARGET}/preinstall.sh
 USER magma:magma
 RUN ${TARGET}/fetch.sh
-RUN ${MAGMA}/apply_patches.sh
+ARG patch_name
+RUN ${MAGMA}/apply_patches.sh ${patch_name}
 
 ## Configuration parameters
 ARG isan

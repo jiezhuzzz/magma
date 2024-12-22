@@ -25,8 +25,8 @@ cleanup() {
 
 trap cleanup EXIT SIGINT SIGTERM
 
-if [ -z $FUZZER ] || [ -z $TARGET ] || [ -z $PROGRAM ]; then
-    echo '$FUZZER, $TARGET, and $PROGRAM must be specified as' \
+if [ -z $FUZZER ] || [ -z $TARGET ] || [ -z $PROGRAM ] || [ -z $PATCH ]; then
+    echo '$FUZZER, $TARGET, $PROGRAM, and $PATCH must be specified as' \
          'environment variables.'
     exit 1
 fi
@@ -36,7 +36,8 @@ MAGMA=${MAGMA:-"$(cd "$(dirname "${BASH_SOURCE[0]}")/../../" >/dev/null 2>&1 \
 export MAGMA
 source "$MAGMA/tools/captain/common.sh"
 
-IMG_NAME="magma/$FUZZER/$TARGET"
+lower_patch=$(echo "$PATCH" | tr '[:upper:]' '[:lower:]')
+IMG_NAME="magma/$FUZZER/$TARGET/$lower_patch"
 
 if [ ! -z $AFFINITY ]; then
     flag_aff="--cpuset-cpus=$AFFINITY --env=AFFINITY=$AFFINITY"
@@ -52,14 +53,14 @@ if [ ! -z "$SHARED" ]; then
 fi
 
 if [ -t 1 ]; then
-    docker run -it $flag_volume \
+    ${CONTAINER_ENGINE:-docker} run -it $flag_volume \
         --cap-add=SYS_PTRACE --security-opt seccomp=unconfined \
         --env=PROGRAM="$PROGRAM" --env=ARGS="$ARGS" \
         --env=FUZZARGS="$FUZZARGS" --env=POLL="$POLL" --env=TIMEOUT="$TIMEOUT" \
         $flag_aff $flag_ep "$IMG_NAME"
 else
     container_id=$(
-    docker run -dt $flag_volume \
+    ${CONTAINER_ENGINE:-docker} run -dt $flag_volume \
         --cap-add=SYS_PTRACE --security-opt seccomp=unconfined \
         --env=PROGRAM="$PROGRAM" --env=ARGS="$ARGS" \
         --env=FUZZARGS="$FUZZARGS" --env=POLL="$POLL" --env=TIMEOUT="$TIMEOUT" \
@@ -67,7 +68,7 @@ else
         $flag_aff $flag_ep "$IMG_NAME"
     )
     container_id=$(cut -c-12 <<< $container_id)
-    echo_time "Container for $FUZZER/$TARGET/$PROGRAM started in $container_id"
+    echo_time "Container for $FUZZER/$TARGET/$PROGRAM/$PATCH started in $container_id"
     docker logs -f "$container_id" &
     exit_code=$(docker wait $container_id)
     exit $exit_code
