@@ -194,7 +194,7 @@ allocate_workers()
         done
         # This times-out every 1 second to force a refresh, since a worker may
         #   have been released by the time inotify instance is set up.
-        inotifywait -qq -t 1 -e delete "$LOCKDIR" &> /dev/null
+        inotifywait -qq -t 60 -e delete "$LOCKDIR" &> /dev/null
     done
     cut -d',' -f2- <<< $WORKERSET
 }
