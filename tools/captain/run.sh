@@ -202,12 +202,17 @@ export -f allocate_workers
 
 # set up a RAM-backed fs for fast processing of canaries and crashes
 if [ -z $CACHE_ON_DISK ]; then
-    echo_time "Obtaining sudo permissions to mount tmpfs"
-    if mountpoint -q -- "$CACHEDIR"; then
-        sudo umount -f "$CACHEDIR"
+    if command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null; then
+        echo_time "Obtaining sudo permissions to mount tmpfs"
+        if mountpoint -q -- "$CACHEDIR"; then
+            sudo umount -f "$CACHEDIR"
+        fi
+        sudo mount -t tmpfs -o size=$TMPFS_SIZE,uid=$(id -u $USER),gid=$(id -g $USER) \
+            tmpfs "$CACHEDIR"
+    else
+        echo_time "No sudo access, using regular filesystem"
+        mkdir -p "$CACHEDIR"
     fi
-    sudo mount -t tmpfs -o size=$TMPFS_SIZE,uid=$(id -u $USER),gid=$(id -g $USER) \
-        tmpfs "$CACHEDIR"
 fi
 
 cleanup()
@@ -226,7 +231,7 @@ cleanup()
         fi
     done
 
-    if [ -z $CACHE_ON_DISK ]; then
+    if [ -z $CACHE_ON_DISK ] && command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null; then
         echo_time "Obtaining sudo permissions to umount tmpfs"
         sudo umount "$CACHEDIR"
     fi
