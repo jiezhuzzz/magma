@@ -1,0 +1,14 @@
+--- a/src/aiff.c
++++ b/src/aiff.c
+@@ -397,6 +397,11 @@
+ static int
+ aiff_read_header (SF_PRIVATE *psf, COMM_CHUNK *comm_fmt)
+ {	SSND_CHUNK	ssnd_fmt ;
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_aiff_read_header", 1)
++#endif
++
+ 	AIFF_PRIVATE *paiff ;
+ 	BUF_UNION	ubuf ;
+ 	uint32_t	chunk_size = 0, FORMsize, SSNDsize, bytesread, mark_count = 0 ;

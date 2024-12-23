@@ -1,0 +1,42 @@
+--- a/src/rf64.c
++++ b/src/rf64.c
+@@ -178,6 +178,11 @@
+ static int
+ rf64_read_header (SF_PRIVATE *psf, int *blockalign, int *framesperblock)
+ {	WAVLIKE_PRIVATE	*wpriv ;
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_rf64_read_header", 1)
++#endif
++
+ 	WAV_FMT		*wav_fmt ;
+ 	sf_count_t riff_size = 0, frame_count = 0, ds64_datalength = 0 ;
+ 	uint32_t marks [2], marker, chunk_size, parsestage = 0 ;
+--- a/src/w64.c
++++ b/src/w64.c
+@@ -223,6 +223,11 @@
+ static int
+ w64_read_header	(SF_PRIVATE *psf, int *blockalign, int *framesperblock)
+ {	WAVLIKE_PRIVATE *wpriv ;
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_w64_read_header", 1)
++#endif
++
+ 	WAV_FMT 	*wav_fmt ;
+ 	int			dword = 0, marker, format = 0 ;
+ 	sf_count_t	chunk_size, bytesread = 0 ;
+--- a/src/wav.c
++++ b/src/wav.c
+@@ -290,6 +290,11 @@
+ static int
+ wav_read_header	(SF_PRIVATE *psf, int *blockalign, int *framesperblock)
+ {	WAVLIKE_PRIVATE	*wpriv ;
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_wav_read_header", 1)
++#endif
++
+ 	WAV_FMT		*wav_fmt ;
+ 	FACT_CHUNK	fact_chunk ;
+ 	uint32_t	marker, chunk_size = 0, RIFFsize = 0, done = 0 ;
