@@ -1,0 +1,14 @@
+--- a/libtiff/tif_pixarlog.c
++++ b/libtiff/tif_pixarlog.c
+@@ -1249,6 +1249,11 @@
+ static void
+ PixarLogClose(TIFF* tif)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_PixarLogClose", 1);
++#endif
++
+         PixarLogState* sp = (PixarLogState*) tif->tif_data;
+ 	TIFFDirectory *td = &tif->tif_dir;
+ 

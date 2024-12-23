@@ -1,0 +1,14 @@
+--- a/libtiff/tif_dirwrite.c
++++ b/libtiff/tif_dirwrite.c
+@@ -420,6 +420,11 @@
+ static int
+ TIFFWriteDirectorySec(TIFF* tif, int isimage, int imagedone, uint64_t* pdiroff)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_TIFFWriteDirectorySec", 1);
++#endif
++
+ 	static const char module[] = "TIFFWriteDirectorySec";
+ 	uint32_t ndir;
+ 	TIFFDirEntry* dir;

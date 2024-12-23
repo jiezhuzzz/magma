@@ -1,0 +1,38 @@
+--- a/libtiff/tif_dirwrite.c
++++ b/libtiff/tif_dirwrite.c
+@@ -193,6 +193,11 @@
+ int
+ TIFFWriteDirectory(TIFF* tif)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_TIFFWriteDirectory", 1);
++#endif
++
+ 	return TIFFWriteDirectorySec(tif,TRUE,TRUE,NULL);
+ }
+ 
+@@ -250,6 +255,11 @@
+ int
+ TIFFCheckpointDirectory(TIFF* tif)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_TIFFCheckpointDirectory", 1);
++#endif
++
+ 	int rc;
+ 	/* Setup the strips arrays, if they haven't already been. */
+ 	if (tif->tif_dir.td_stripoffset_p == NULL)
+@@ -262,6 +272,11 @@
+ int
+ TIFFWriteCustomDirectory(TIFF* tif, uint64_t* pdiroff)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_TIFFWriteCustomDirectory", 1);
++#endif
++
+ 	return TIFFWriteDirectorySec(tif,FALSE,FALSE,pdiroff);
+ }
+ 
