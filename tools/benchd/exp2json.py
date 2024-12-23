@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.12"
+# dependencies = [
+#     "pandas",
+# ]
+# ///
 
 import argparse
 from collections import defaultdict
@@ -55,8 +61,8 @@ def path_split_last(path, n):
 
 def find_campaigns(workdir):
     ar_dir = os.path.join(workdir, "ar")
-    for root, dirs, _, level in walklevel(ar_dir, 3):
-        if level == 3:
+    for root, dirs, _, level in walklevel(ar_dir, 4):
+        if level == 4:
             for run in dirs:
                 # `run` directories always have integer-only names
                 if not run.isdigit():
