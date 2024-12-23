@@ -23,6 +23,7 @@ if [ ! -f "$base_patch_file" ]; then
     exit 1
 fi
 patch -p1 -d "$TARGET/repo" < "$base_patch_file"
+echo -e "\e[32mBase patch file $base_patch_file applied.\e[0m"
 
 spec_patch_file="$TARGET/patches/specs/${1}.patch"
 if [ ! -f "$spec_patch_file" ]; then

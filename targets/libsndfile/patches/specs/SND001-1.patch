@@ -5,7 +5,7 @@
  {	int		subformat, error, endian ;
  
 +#ifdef MAGMA_ENABLE_CANARIES
-+    MAGMA_LOG("MAGMA_RECORD_paf_open", 1)
++    MAGMA_LOG("MAGMA_RECORD_paf_open", 1);
 +#endif
 +
 +
