@@ -6,7 +6,7 @@
  {	SSND_CHUNK	ssnd_fmt ;
 +
 +#ifdef MAGMA_ENABLE_CANARIES
-+    MAGMA_LOG("MAGMA_RECORD_aiff_read_header", 1)
++    MAGMA_LOG("MAGMA_RECORD_aiff_read_header", 1);
 +#endif
 +
  	AIFF_PRIVATE *paiff ;

@@ -6,7 +6,7 @@
  {
 +
 +#ifdef MAGMA_ENABLE_CANARIES
-+    MAGMA_LOG("MAGMA_RECORD_png_push_read_chunk", 1)
++    MAGMA_LOG("MAGMA_RECORD_png_push_read_chunk", 1);
 +#endif
 +
     png_uint_32 chunk_name;
@@ -20,7 +20,7 @@
  {
 +
 +#ifdef MAGMA_ENABLE_CANARIES
-+    MAGMA_LOG("MAGMA_RECORD_png_read_info", 1)
++    MAGMA_LOG("MAGMA_RECORD_png_read_info", 1);
 +#endif
 +
  #ifdef PNG_HANDLE_AS_UNKNOWN_SUPPORTED
@@ -32,7 +32,7 @@
  {
 +
 +#ifdef MAGMA_ENABLE_CANARIES
-+    MAGMA_LOG("MAGMA_RECORD_png_read_end", 1)
++    MAGMA_LOG("MAGMA_RECORD_png_read_end", 1);
 +#endif
 +
  #ifdef PNG_HANDLE_AS_UNKNOWN_SUPPORTED
@@ -46,7 +46,7 @@
  {
 +
 +#ifdef MAGMA_ENABLE_CANARIES
-+    MAGMA_LOG("MAGMA_RECORD_png_handle_PLTE", 1)
++    MAGMA_LOG("MAGMA_RECORD_png_handle_PLTE", 1);
 +#endif
 +
     png_color palette[PNG_MAX_PALETTE_LENGTH];
@@ -60,7 +60,7 @@
  {
 +
 +#ifdef MAGMA_ENABLE_CANARIES
-+    MAGMA_LOG("MAGMA_RECORD_png_image_set_PLTE", 1)
++    MAGMA_LOG("MAGMA_RECORD_png_image_set_PLTE", 1);
 +#endif
 +
     png_imagep image = display->image;

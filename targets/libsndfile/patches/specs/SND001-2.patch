@@ -1,0 +1,14 @@
+--- a/src/sndfile.c
++++ b/src/sndfile.c
+@@ -2997,6 +2997,11 @@
+ psf_open_file (SF_PRIVATE *psf, SF_INFO *sfinfo)
+ {	int		error, format ;
+ 
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_psf_open_file", 1);
++#endif
++
++
+ 	sf_errno = error = 0 ;
+ 	sf_parselog [0] = 0 ;
+ 

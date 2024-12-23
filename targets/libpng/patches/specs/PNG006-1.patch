@@ -6,7 +6,7 @@
  {
 +
 +#ifdef MAGMA_ENABLE_CANARIES
-+    MAGMA_LOG("MAGMA_RECORD_png_destroy_info_struct", 1)
++    MAGMA_LOG("MAGMA_RECORD_png_destroy_info_struct", 1);
 +#endif
 +
     png_inforp info_ptr = NULL;
@@ -18,7 +18,7 @@
  {
 +
 +#ifdef MAGMA_ENABLE_CANARIES
-+    MAGMA_LOG("MAGMA_RECORD_png_colorspace_sync_info", 1)
++    MAGMA_LOG("MAGMA_RECORD_png_colorspace_sync_info", 1);
 +#endif
 +
     if ((info_ptr->colorspace.flags & PNG_COLORSPACE_INVALID) != 0)
@@ -32,7 +32,7 @@
  {
 +
 +#ifdef MAGMA_ENABLE_CANARIES
-+    MAGMA_LOG("MAGMA_RECORD_png_read_info", 1)
++    MAGMA_LOG("MAGMA_RECORD_png_read_info", 1);
 +#endif
 +
  #ifdef PNG_HANDLE_AS_UNKNOWN_SUPPORTED
@@ -44,7 +44,7 @@
  {
 +
 +#ifdef MAGMA_ENABLE_CANARIES
-+    MAGMA_LOG("MAGMA_RECORD_png_read_end", 1)
++    MAGMA_LOG("MAGMA_RECORD_png_read_end", 1);
 +#endif
 +
  #ifdef PNG_HANDLE_AS_UNKNOWN_SUPPORTED
@@ -56,7 +56,7 @@
  {
 +
 +#ifdef MAGMA_ENABLE_CANARIES
-+    MAGMA_LOG("MAGMA_RECORD_png_read_png", 1)
++    MAGMA_LOG("MAGMA_RECORD_png_read_png", 1);
 +#endif
 +
     if (png_ptr == NULL || info_ptr == NULL)
@@ -70,7 +70,7 @@
  {
 +
 +#ifdef MAGMA_ENABLE_CANARIES
-+    MAGMA_LOG("MAGMA_RECORD_png_handle_iCCP", 1)
++    MAGMA_LOG("MAGMA_RECORD_png_handle_iCCP", 1);
 +#endif
 +
     png_const_charp errmsg = NULL; /* error message output, or no error */
@@ -84,7 +84,7 @@
  {
 +
 +#ifdef MAGMA_ENABLE_CANARIES
-+    MAGMA_LOG("MAGMA_RECORD_png_set_hIST", 1)
++    MAGMA_LOG("MAGMA_RECORD_png_set_hIST", 1);
 +#endif
 +
     int i;
@@ -95,7 +95,7 @@
  {
  
 +#ifdef MAGMA_ENABLE_CANARIES
-+    MAGMA_LOG("MAGMA_RECORD_png_set_PLTE", 1)
++    MAGMA_LOG("MAGMA_RECORD_png_set_PLTE", 1);
 +#endif
 +
 +
@@ -108,7 +108,7 @@
  {
 +
 +#ifdef MAGMA_ENABLE_CANARIES
-+    MAGMA_LOG("MAGMA_RECORD_png_set_iCCP", 1)
++    MAGMA_LOG("MAGMA_RECORD_png_set_iCCP", 1);
 +#endif
 +
     png_charp new_iccp_name;
@@ -120,7 +120,7 @@
  {
 +
 +#ifdef MAGMA_ENABLE_CANARIES
-+    MAGMA_LOG("MAGMA_RECORD_png_set_tRNS", 1)
++    MAGMA_LOG("MAGMA_RECORD_png_set_tRNS", 1);
 +#endif
 +
     png_debug1(1, "in %s storage function", "tRNS");
@@ -132,7 +132,7 @@
  {
 +
 +#ifdef MAGMA_ENABLE_CANARIES
-+    MAGMA_LOG("MAGMA_RECORD_png_set_rows", 1)
++    MAGMA_LOG("MAGMA_RECORD_png_set_rows", 1);
 +#endif
 +
     png_debug1(1, "in %s storage function", "rows");

@@ -1,0 +1,14 @@
+--- a/src/aiff.c
++++ b/src/aiff.c
+@@ -234,6 +234,11 @@
+ int
+ aiff_open (SF_PRIVATE *psf)
+ {	COMM_CHUNK comm_fmt ;
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_aiff_open", 1);
++#endif
++
+ 	int error = 0, subformat ;
+ 
+ 	memset (&comm_fmt, 0, sizeof (comm_fmt)) ;

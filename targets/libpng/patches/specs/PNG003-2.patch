@@ -1,0 +1,92 @@
+--- a/pngpread.c
++++ b/pngpread.c
+@@ -93,6 +93,11 @@
+ void /* PRIVATE */
+ png_process_some_data(png_structrp png_ptr, png_inforp info_ptr)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_process_some_data", 1);
++#endif
++
+    if (png_ptr == NULL)
+       return;
+ 
+@@ -166,6 +171,11 @@
+ void /* PRIVATE */
+ png_push_read_chunk(png_structrp png_ptr, png_inforp info_ptr)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_push_read_chunk", 1);
++#endif
++
+    png_uint_32 chunk_name;
+ #ifdef PNG_HANDLE_AS_UNKNOWN_SUPPORTED
+    int keep; /* unknown handling method */
+--- a/contrib/tools/pngfix.c
++++ b/contrib/tools/pngfix.c
+@@ -3579,6 +3579,11 @@
+     * defined for file::status_code as above.
+     */
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_read_png", 1);
++#endif
++
+    png_structp png_ptr;
+    png_infop info_ptr = NULL;
+    volatile int rc;
+--- a/pngread.c
++++ b/pngread.c
+@@ -91,6 +91,11 @@
+ void PNGAPI
+ png_read_info(png_structrp png_ptr, png_inforp info_ptr)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_read_info", 1);
++#endif
++
+ #ifdef PNG_HANDLE_AS_UNKNOWN_SUPPORTED
+    int keep;
+ #endif
+@@ -765,6 +770,11 @@
+ void PNGAPI
+ png_read_end(png_structrp png_ptr, png_inforp info_ptr)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_read_end", 1);
++#endif
++
+ #ifdef PNG_HANDLE_AS_UNKNOWN_SUPPORTED
+    int keep;
+ #endif
+@@ -1049,6 +1059,11 @@
+ png_read_png(png_structrp png_ptr, png_inforp info_ptr,
+     int transforms, voidp params)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_read_png", 1);
++#endif
++
+    if (png_ptr == NULL || info_ptr == NULL)
+       return;
+ 
+--- a/pngwrite.c
++++ b/pngwrite.c
+@@ -1924,6 +1924,11 @@
+ static int
+ png_image_write_main(png_voidp argument)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_image_write_main", 1);
++#endif
++
+    png_image_write_control *display = png_voidcast(png_image_write_control*,
+        argument);
+    png_imagep image = display->image;

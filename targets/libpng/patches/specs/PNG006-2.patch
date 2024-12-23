@@ -1,0 +1,230 @@
+--- a/pngread.c
++++ b/pngread.c
+@@ -91,6 +91,11 @@
+ void PNGAPI
+ png_read_info(png_structrp png_ptr, png_inforp info_ptr)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_read_info", 1);
++#endif
++
+ #ifdef PNG_HANDLE_AS_UNKNOWN_SUPPORTED
+    int keep;
+ #endif
+@@ -765,6 +770,11 @@
+ void PNGAPI
+ png_read_end(png_structrp png_ptr, png_inforp info_ptr)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_read_end", 1);
++#endif
++
+ #ifdef PNG_HANDLE_AS_UNKNOWN_SUPPORTED
+    int keep;
+ #endif
+@@ -1011,6 +1021,11 @@
+ png_destroy_read_struct(png_structpp png_ptr_ptr, png_infopp info_ptr_ptr,
+     png_infopp end_info_ptr_ptr)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_destroy_read_struct", 1);
++#endif
++
+    png_structrp png_ptr = NULL;
+ 
+    png_debug(1, "in png_destroy_read_struct");
+@@ -1049,6 +1064,11 @@
+ png_read_png(png_structrp png_ptr, png_inforp info_ptr,
+     int transforms, voidp params)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_read_png", 1);
++#endif
++
+    if (png_ptr == NULL || info_ptr == NULL)
+       return;
+ 
+@@ -1305,6 +1325,11 @@
+ static int
+ png_image_read_init(png_imagep image)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_image_read_init", 1);
++#endif
++
+    if (image->opaque == NULL)
+    {
+       png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, image,
+--- a/pngwrite.c
++++ b/pngwrite.c
+@@ -973,6 +973,11 @@
+ void PNGAPI
+ png_destroy_write_struct(png_structpp png_ptr_ptr, png_infopp info_ptr_ptr)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_destroy_write_struct", 1);
++#endif
++
+    png_debug(1, "in png_destroy_write_struct");
+ 
+    if (png_ptr_ptr != NULL)
+@@ -1462,6 +1467,11 @@
+ static int
+ png_image_write_init(png_imagep image)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_image_write_init", 1);
++#endif
++
+    png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, image,
+        png_safe_error, png_safe_warning);
+ 
+@@ -1778,6 +1788,11 @@
+ static void
+ png_image_set_PLTE(png_image_write_control *display)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_image_set_PLTE", 1);
++#endif
++
+    png_imagep image = display->image;
+    const void *cmap = display->colormap;
+    int entries = image->colormap_entries > 256 ? 256 :
+--- a/png.c
++++ b/png.c
+@@ -1217,6 +1217,11 @@
+ void /* PRIVATE */
+ png_colorspace_sync(png_const_structrp png_ptr, png_inforp info_ptr)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_colorspace_sync", 1);
++#endif
++
+    if (info_ptr == NULL) /* reduce code size; check here not in the caller */
+       return;
+ 
+--- a/pngset.c
++++ b/pngset.c
+@@ -42,6 +42,11 @@
+     png_fixed_point red_y, png_fixed_point green_x, png_fixed_point green_y,
+     png_fixed_point blue_x, png_fixed_point blue_y)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_set_cHRM_fixed", 1);
++#endif
++
+    png_xy xy;
+ 
+    png_debug1(1, "in %s storage function", "cHRM fixed");
+@@ -73,6 +78,11 @@
+     png_fixed_point int_blue_X, png_fixed_point int_blue_Y,
+     png_fixed_point int_blue_Z)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_set_cHRM_XYZ_fixed", 1);
++#endif
++
+    png_XYZ XYZ;
+ 
+    png_debug1(1, "in %s storage function", "cHRM XYZ fixed");
+@@ -186,6 +196,11 @@
+ png_set_gAMA_fixed(png_const_structrp png_ptr, png_inforp info_ptr,
+     png_fixed_point file_gamma)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_set_gAMA_fixed", 1);
++#endif
++
+    png_debug1(1, "in %s storage function", "gAMA");
+ 
+    if (png_ptr == NULL || info_ptr == NULL)
+@@ -652,6 +667,11 @@
+ void PNGAPI
+ png_set_sRGB(png_const_structrp png_ptr, png_inforp info_ptr, int srgb_intent)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_set_sRGB", 1);
++#endif
++
+    png_debug1(1, "in %s storage function", "sRGB");
+ 
+    if (png_ptr == NULL || info_ptr == NULL)
+@@ -665,6 +685,11 @@
+ png_set_sRGB_gAMA_and_cHRM(png_const_structrp png_ptr, png_inforp info_ptr,
+     int srgb_intent)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_set_sRGB_gAMA_and_cHRM", 1);
++#endif
++
+    png_debug1(1, "in %s storage function", "sRGB_gAMA_and_cHRM");
+ 
+    if (png_ptr == NULL || info_ptr == NULL)
+@@ -689,6 +714,11 @@
+     png_const_charp name, int compression_type,
+     png_const_bytep profile, png_uint_32 proflen)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_set_iCCP", 1);
++#endif
++
+    png_charp new_iccp_name;
+    png_bytep new_iccp_profile;
+    size_t length;
+--- a/pngpread.c
++++ b/pngpread.c
+@@ -166,6 +166,11 @@
+ void /* PRIVATE */
+ png_push_read_chunk(png_structrp png_ptr, png_inforp info_ptr)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_push_read_chunk", 1);
++#endif
++
+    png_uint_32 chunk_name;
+ #ifdef PNG_HANDLE_AS_UNKNOWN_SUPPORTED
+    int keep; /* unknown handling method */
+--- a/pngrutil.c
++++ b/pngrutil.c
+@@ -1815,6 +1815,11 @@
+ void /* PRIVATE */
+ png_handle_tRNS(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_handle_tRNS", 1);
++#endif
++
+    png_byte readbuf[PNG_MAX_PALETTE_LENGTH];
+ 
+    png_debug(1, "in png_handle_tRNS");
+--- a/contrib/tools/pngfix.c
++++ b/contrib/tools/pngfix.c
+@@ -3579,6 +3579,11 @@
+     * defined for file::status_code as above.
+     */
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_read_png", 1);
++#endif
++
+    png_structp png_ptr;
+    png_infop info_ptr = NULL;
+    volatile int rc;

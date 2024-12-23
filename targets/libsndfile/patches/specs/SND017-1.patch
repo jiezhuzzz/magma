@@ -6,7 +6,7 @@
  {	WAVLIKE_PRIVATE	*wpriv ;
 +
 +#ifdef MAGMA_ENABLE_CANARIES
-+    MAGMA_LOG("MAGMA_RECORD_rf64_read_header", 1)
++    MAGMA_LOG("MAGMA_RECORD_rf64_read_header", 1);
 +#endif
 +
  	WAV_FMT		*wav_fmt ;
@@ -20,7 +20,7 @@
  {	WAVLIKE_PRIVATE *wpriv ;
 +
 +#ifdef MAGMA_ENABLE_CANARIES
-+    MAGMA_LOG("MAGMA_RECORD_w64_read_header", 1)
++    MAGMA_LOG("MAGMA_RECORD_w64_read_header", 1);
 +#endif
 +
  	WAV_FMT 	*wav_fmt ;
@@ -34,7 +34,7 @@
  {	WAVLIKE_PRIVATE	*wpriv ;
 +
 +#ifdef MAGMA_ENABLE_CANARIES
-+    MAGMA_LOG("MAGMA_RECORD_wav_read_header", 1)
++    MAGMA_LOG("MAGMA_RECORD_wav_read_header", 1);
 +#endif
 +
  	WAV_FMT		*wav_fmt ;
