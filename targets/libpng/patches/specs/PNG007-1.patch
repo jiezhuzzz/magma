@@ -1,0 +1,42 @@
+--- a/pngread.c
++++ b/pngread.c
+@@ -266,6 +266,11 @@
+ void PNGAPI
+ png_read_update_info(png_structrp png_ptr, png_inforp info_ptr)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_read_update_info", 1)
++#endif
++
+    png_debug(1, "in png_read_update_info");
+ 
+    if (png_ptr != NULL)
+--- a/pngrutil.c
++++ b/pngrutil.c
+@@ -911,6 +911,11 @@
+ void /* PRIVATE */
+ png_handle_PLTE(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_handle_PLTE", 1)
++#endif
++
+    png_color palette[PNG_MAX_PALETTE_LENGTH];
+    int max_palette_length, num, i;
+ #ifdef PNG_POINTER_INDEXING_SUPPORTED
+--- a/pngwrite.c
++++ b/pngwrite.c
+@@ -1778,6 +1778,11 @@
+ static void
+ png_image_set_PLTE(png_image_write_control *display)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_image_set_PLTE", 1)
++#endif
++
+    png_imagep image = display->image;
+    const void *cmap = display->colormap;
+    int entries = image->colormap_entries > 256 ? 256 :

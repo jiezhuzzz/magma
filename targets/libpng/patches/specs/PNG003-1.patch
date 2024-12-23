@@ -1,0 +1,68 @@
+--- a/pngpread.c
++++ b/pngpread.c
+@@ -166,6 +166,11 @@
+ void /* PRIVATE */
+ png_push_read_chunk(png_structrp png_ptr, png_inforp info_ptr)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_push_read_chunk", 1)
++#endif
++
+    png_uint_32 chunk_name;
+ #ifdef PNG_HANDLE_AS_UNKNOWN_SUPPORTED
+    int keep; /* unknown handling method */
+--- a/pngread.c
++++ b/pngread.c
+@@ -91,6 +91,11 @@
+ void PNGAPI
+ png_read_info(png_structrp png_ptr, png_inforp info_ptr)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_read_info", 1)
++#endif
++
+ #ifdef PNG_HANDLE_AS_UNKNOWN_SUPPORTED
+    int keep;
+ #endif
+@@ -765,6 +770,11 @@
+ void PNGAPI
+ png_read_end(png_structrp png_ptr, png_inforp info_ptr)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_read_end", 1)
++#endif
++
+ #ifdef PNG_HANDLE_AS_UNKNOWN_SUPPORTED
+    int keep;
+ #endif
+--- a/pngrutil.c
++++ b/pngrutil.c
+@@ -911,6 +911,11 @@
+ void /* PRIVATE */
+ png_handle_PLTE(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_handle_PLTE", 1)
++#endif
++
+    png_color palette[PNG_MAX_PALETTE_LENGTH];
+    int max_palette_length, num, i;
+ #ifdef PNG_POINTER_INDEXING_SUPPORTED
+--- a/pngwrite.c
++++ b/pngwrite.c
+@@ -1778,6 +1778,11 @@
+ static void
+ png_image_set_PLTE(png_image_write_control *display)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_image_set_PLTE", 1)
++#endif
++
+    png_imagep image = display->image;
+    const void *cmap = display->colormap;
+    int entries = image->colormap_entries > 256 ? 256 :

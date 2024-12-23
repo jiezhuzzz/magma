@@ -1,0 +1,140 @@
+--- a/png.c
++++ b/png.c
+@@ -385,6 +385,11 @@
+ void PNGAPI
+ png_destroy_info_struct(png_const_structrp png_ptr, png_infopp info_ptr_ptr)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_destroy_info_struct", 1)
++#endif
++
+    png_inforp info_ptr = NULL;
+ 
+    png_debug(1, "in png_destroy_info_struct");
+@@ -1171,6 +1176,11 @@
+ void /* PRIVATE */
+ png_colorspace_sync_info(png_const_structrp png_ptr, png_inforp info_ptr)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_colorspace_sync_info", 1)
++#endif
++
+    if ((info_ptr->colorspace.flags & PNG_COLORSPACE_INVALID) != 0)
+    {
+       /* Everything is invalid */
+--- a/pngread.c
++++ b/pngread.c
+@@ -91,6 +91,11 @@
+ void PNGAPI
+ png_read_info(png_structrp png_ptr, png_inforp info_ptr)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_read_info", 1)
++#endif
++
+ #ifdef PNG_HANDLE_AS_UNKNOWN_SUPPORTED
+    int keep;
+ #endif
+@@ -765,6 +770,11 @@
+ void PNGAPI
+ png_read_end(png_structrp png_ptr, png_inforp info_ptr)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_read_end", 1)
++#endif
++
+ #ifdef PNG_HANDLE_AS_UNKNOWN_SUPPORTED
+    int keep;
+ #endif
+@@ -1049,6 +1059,11 @@
+ png_read_png(png_structrp png_ptr, png_inforp info_ptr,
+     int transforms, voidp params)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_read_png", 1)
++#endif
++
+    if (png_ptr == NULL || info_ptr == NULL)
+       return;
+ 
+--- a/pngrutil.c
++++ b/pngrutil.c
+@@ -1361,6 +1361,11 @@
+ png_handle_iCCP(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+ /* Note: this does not properly handle profiles that are > 64K under DOS */
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_handle_iCCP", 1)
++#endif
++
+    png_const_charp errmsg = NULL; /* error message output, or no error */
+    int finished = 0; /* crc checked */
+ 
+--- a/pngset.c
++++ b/pngset.c
+@@ -210,6 +210,11 @@
+ png_set_hIST(png_const_structrp png_ptr, png_inforp info_ptr,
+     png_const_uint_16p hist)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_set_hIST", 1)
++#endif
++
+    int i;
+ 
+    png_debug1(1, "in %s storage function", "hIST");
+@@ -573,6 +578,11 @@
+     png_const_colorp palette, int num_palette)
+ {
+ 
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_set_PLTE", 1)
++#endif
++
++
+    png_uint_32 max_palette_length;
+ 
+    png_debug1(1, "in %s storage function", "PLTE");
+@@ -689,6 +699,11 @@
+     png_const_charp name, int compression_type,
+     png_const_bytep profile, png_uint_32 proflen)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_set_iCCP", 1)
++#endif
++
+    png_charp new_iccp_name;
+    png_bytep new_iccp_profile;
+    size_t length;
+@@ -994,6 +1009,11 @@
+ png_set_tRNS(png_structrp png_ptr, png_inforp info_ptr,
+     png_const_bytep trans_alpha, int num_trans, png_const_color_16p trans_color)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_set_tRNS", 1)
++#endif
++
+    png_debug1(1, "in %s storage function", "tRNS");
+ 
+    if (png_ptr == NULL || info_ptr == NULL)
+@@ -1546,6 +1566,11 @@
+ png_set_rows(png_const_structrp png_ptr, png_inforp info_ptr,
+     png_bytepp row_pointers)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_set_rows", 1)
++#endif
++
+    png_debug1(1, "in %s storage function", "rows");
+ 
+    if (png_ptr == NULL || info_ptr == NULL)
