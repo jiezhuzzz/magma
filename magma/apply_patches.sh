@@ -17,18 +17,16 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
+# copy generated function level fuzzing targets list
+fuzzing_targets_file="$TARGET/patches/fuzzing_targets/$1.txt"
+if [ -f "$fuzzing_targets_file" ]; then
+    cp "$fuzzing_targets_file" "$TARGET/repo/fuzzing_targets.txt"
+fi
+
 base_patch_file="$TARGET/patches/bugs/${1%%-*}.patch"
 if [ ! -f "$base_patch_file" ]; then
     echo "Patch file $base_patch_file not found."
     exit 1
 fi
 patch -p1 -d "$TARGET/repo" < "$base_patch_file"
-echo -e "\e[32mBase patch file $base_patch_file applied.\e[0m"
-
-spec_patch_file="$TARGET/patches/specs/${1}.patch"
-if [ ! -f "$spec_patch_file" ]; then
-    echo -e "\e[31mPatch file $spec_patch_file not found. Only applying base patch.\e[0m"
-else
-    patch -p1 -d "$TARGET/repo" < "$spec_patch_file"
-    echo -e "\e[32mPatch file $spec_patch_file applied.\e[0m"
-fi
+echo "Base patch file $base_patch_file applied."

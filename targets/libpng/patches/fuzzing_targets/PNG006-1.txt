@@ -1,0 +1,11 @@
+png.c:388
+png.c:1178
+pngread.c:1053
+pngrutil.c:1367
+pngset.c:997
+pngset.c:692
+pngset.c:576
+pngset.c:213
+pngset.c:1549
+pngread.c:772
+pngread.c:98

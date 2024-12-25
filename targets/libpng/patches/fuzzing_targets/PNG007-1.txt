@@ -1,0 +1,3 @@
+pngread.c:269
+pngrutil.c:914
+pngwrite.c:1781

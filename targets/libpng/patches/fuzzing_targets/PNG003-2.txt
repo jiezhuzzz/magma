@@ -1,0 +1,7 @@
+pngpread.c:97
+contrib/tools/pngfix.c:3582
+pngread.c:1053
+pngpread.c:169
+pngread.c:772
+pngread.c:98
+pngwrite.c:1928

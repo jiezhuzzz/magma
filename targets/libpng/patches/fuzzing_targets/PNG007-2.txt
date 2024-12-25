@@ -1,0 +1,7 @@
+pngread.c:1053
+pngread.c:3136
+pngread.c:3675
+pngpread.c:169
+pngread.c:772
+pngread.c:98
+pngwrite.c:1928
