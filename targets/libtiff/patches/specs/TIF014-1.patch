@@ -1,0 +1,14 @@
+--- a/libtiff/tif_dirread.c
++++ b/libtiff/tif_dirread.c
+@@ -3579,6 +3579,11 @@
+ int
+ TIFFReadDirectory(TIFF* tif)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_TIFFReadDirectory", 1);
++#endif
++
+ 	static const char module[] = "TIFFReadDirectory";
+ 	TIFFDirEntry* dir;
+ 	uint16_t dircount;

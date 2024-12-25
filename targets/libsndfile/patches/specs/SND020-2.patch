@@ -1,0 +1,42 @@
+--- a/src/rf64.c
++++ b/src/rf64.c
+@@ -85,6 +85,11 @@
+ int
+ rf64_open (SF_PRIVATE *psf)
+ {	WAVLIKE_PRIVATE *wpriv ;
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_rf64_open", 1);
++#endif
++
+ 	int	subformat, error = 0 ;
+ 	int blockalign, framesperblock ;
+ 
+--- a/src/w64.c
++++ b/src/w64.c
+@@ -123,6 +123,11 @@
+ int
+ w64_open	(SF_PRIVATE *psf)
+ {	WAVLIKE_PRIVATE * wpriv ;
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_w64_open", 1);
++#endif
++
+ 	int	subformat, error, blockalign = 0, framesperblock = 0 ;
+ 
+ 	if ((wpriv = calloc (1, sizeof (WAVLIKE_PRIVATE))) == NULL)
+--- a/src/wav.c
++++ b/src/wav.c
+@@ -158,6 +158,11 @@
+ int
+ wav_open	(SF_PRIVATE *psf)
+ {	WAVLIKE_PRIVATE * wpriv ;
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_wav_open", 1);
++#endif
++
+ 	int	format, subformat, error, blockalign = 0, framesperblock = 0 ;
+ 
+ 	if ((wpriv = calloc (1, sizeof (WAVLIKE_PRIVATE))) == NULL)

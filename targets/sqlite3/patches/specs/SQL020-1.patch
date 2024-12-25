@@ -1,0 +1,14 @@
+--- a/sqlite3.c
++++ b/sqlite3.c
+@@ -156077,6 +156077,11 @@
+ ** at the top of this file.
+ */
+ SQLITE_PRIVATE int sqlite3WindowRewrite(Parse *pParse, Select *p){
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_sqlite3WindowRewrite", 1);
++#endif
++
+   int rc = SQLITE_OK;
+   if( p->pWin && p->pPrior==0 && ALWAYS((p->selFlags & SF_WinRewrite)==0) ){
+     Vdbe *v = sqlite3GetVdbe(pParse);

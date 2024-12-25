@@ -1,0 +1,14 @@
+--- a/src/select.c
++++ b/src/select.c
+@@ -5385,6 +5385,11 @@
+ */
+ static int selectExpander(Walker *pWalker, Select *p){
+   Parse *pParse = pWalker->pParse;
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_selectExpander", 1);
++#endif
++
+   int i, j, k, rc;
+   SrcList *pTabList;
+   ExprList *pEList;

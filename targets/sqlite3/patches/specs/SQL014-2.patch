@@ -1,0 +1,146 @@
+--- a/sqlite3.c
++++ b/sqlite3.c
+@@ -104313,6 +104313,11 @@
+   Expr *pExpr,            /* The IN operator */
+   int iTab                /* Use this cursor number */
+ ){
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_sqlite3CodeRhsOfIN", 1);
++#endif
++
+   int addrOnce = 0;           /* Address of the OP_Once instruction at top */
+   int addr;                   /* Address of OP_OpenEphemeral instruction */
+   Expr *pLeft;                /* the LHS of the IN operator */
+@@ -104501,6 +104506,11 @@
+ */
+ #ifndef SQLITE_OMIT_SUBQUERY
+ SQLITE_PRIVATE int sqlite3CodeSubselect(Parse *pParse, Expr *pExpr){
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_sqlite3CodeSubselect", 1);
++#endif
++
+   int addrOnce = 0;           /* Address of OP_Once at top of subroutine */
+   int rReg = 0;               /* Register storing resulting */
+   Select *pSel;               /* SELECT statement to encode */
+@@ -115015,6 +115025,11 @@
+   u8 tabOpts,             /* Extra table options. Usually 0. */
+   Select *pSelect         /* Select from a "CREATE ... AS SELECT" */
+ ){
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_sqlite3EndTable", 1);
++#endif
++
+   Table *p;                 /* The new table */
+   sqlite3 *db = pParse->db; /* The database connection */
+   int iDb;                  /* Database in which the table lives */
+@@ -118628,6 +118643,11 @@
+   Expr *pLimit,        /* Optional LIMIT clause */
+   int iCur             /* Cursor number for ephemeral table */
+ ){
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_sqlite3MaterializeView", 1);
++#endif
++
+   SelectDest dest;
+   Select *pSel;
+   SrcList *pFrom;
+@@ -123867,6 +123887,11 @@
+   int onError,          /* How to handle constraint errors */
+   Upsert *pUpsert       /* ON CONFLICT clauses for upsert, or NULL */
+ ){
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_sqlite3Insert", 1);
++#endif
++
+   sqlite3 *db;          /* The main database structure */
+   Table *pTab;          /* The table to insert into.  aka TABLE */
+   int i, j;             /* Loop counters */
+@@ -134684,6 +134709,11 @@
+   Select *p,            /* The recursive SELECT to be coded */
+   SelectDest *pDest     /* What to do with query results */
+ ){
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_generateWithRecursiveQuery", 1);
++#endif
++
+   SrcList *pSrc = p->pSrc;      /* The FROM clause of the recursive query */
+   int nCol = p->pEList->nExpr;  /* Number of columns in the recursive table */
+   Vdbe *v = pParse->pVdbe;      /* The prepared statement under construction */
+@@ -134934,6 +134964,11 @@
+   Select *p,            /* The right-most of SELECTs to be coded */
+   SelectDest *pDest     /* What to do with query results */
+ ){
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_multiSelect", 1);
++#endif
++
+   int rc = SQLITE_OK;   /* Success code from a subroutine */
+   Select *pPrior;       /* Another SELECT immediately to our left */
+   Vdbe *v;              /* Generate code to this VDBE */
+@@ -135527,6 +135562,11 @@
+   Select *p,            /* The right-most of SELECTs to be coded */
+   SelectDest *pDest     /* What to do with query results */
+ ){
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_multiSelectOrderBy", 1);
++#endif
++
+   int i, j;             /* Loop counters */
+   Select *pPrior;       /* Another SELECT immediately to our left */
+   Vdbe *v;              /* Generate code to this VDBE */
+@@ -138481,6 +138521,11 @@
+   Select *p,             /* The SELECT statement being coded. */
+   SelectDest *pDest      /* What to do with the query results */
+ ){
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_sqlite3Select", 1);
++#endif
++
+   int i, j;              /* Loop counters */
+   WhereInfo *pWInfo;     /* Return from sqlite3WhereBegin() */
+   Vdbe *v;               /* The virtual machine under construction */
+@@ -140851,6 +140896,11 @@
+   TriggerStep *pStepList,   /* List of statements inside the trigger body */
+   int orconf                /* Conflict algorithm. (OE_Abort, etc) */
+ ){
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_codeTriggerProgram", 1);
++#endif
++
+   TriggerStep *pStep;
+   Vdbe *v = pParse->pVdbe;
+   sqlite3 *db = pParse->db;
+@@ -141487,6 +141537,11 @@
+   ExprList *pOrderBy,             /* ORDER BY clause */
+   Expr *pLimit                    /* LIMIT clause */
+ ){
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_updateFromSelect", 1);
++#endif
++
+   int i;
+   SelectDest dest;
+   Select *pSelect = 0;
+@@ -161730,6 +161785,11 @@
+   sqlite3ParserTOKENTYPE yyLookaheadToken  /* Value of the lookahead token */
+   sqlite3ParserCTX_PDECL                   /* %extra_context */
+ ){
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_yy_reduce", 1);
++#endif
++
+   int yygoto;                     /* The next state */
+   YYACTIONTYPE yyact;             /* The next action */
+   yyStackEntry *yymsp;            /* The top of the parser's stack */

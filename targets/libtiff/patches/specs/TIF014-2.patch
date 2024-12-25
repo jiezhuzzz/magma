@@ -1,0 +1,186 @@
+--- a/libtiff/tif_dir.c
++++ b/libtiff/tif_dir.c
+@@ -1665,6 +1665,11 @@
+ int
+ TIFFSetDirectory(TIFF* tif, uint16_t dirn)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_TIFFSetDirectory", 1);
++#endif
++
+ 	uint64_t nextdir;
+ 	uint16_t n;
+ 
+@@ -1699,6 +1704,11 @@
+ int
+ TIFFSetSubDirectory(TIFF* tif, uint64_t diroff)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_TIFFSetSubDirectory", 1);
++#endif
++
+ 	tif->tif_nextdiroff = diroff;
+ 	/*
+ 	 * Reset tif_dirnumber counter and start new list of seen directories.
+--- a/libtiff/tif_open.c
++++ b/libtiff/tif_open.c
+@@ -80,6 +80,11 @@
+ 	TIFFUnmapFileProc unmapproc
+ )
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_TIFFClientOpen", 1);
++#endif
++
+ 	static const char module[] = "TIFFClientOpen";
+ 	TIFF *tif;
+ 	int m;
+--- a/tools/fax2ps.c
++++ b/tools/fax2ps.c
+@@ -277,6 +277,11 @@
+ int
+ findPage(TIFF* tif, uint16_t pageNumber)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_findPage", 1);
++#endif
++
+     uint16_t pn = (uint16_t) -1;
+     uint16_t ptotal = (uint16_t) -1;
+     if (GetPageNumber(tif)) {
+@@ -290,6 +295,11 @@
+ void
+ fax2ps(TIFF* tif, uint16_t npages, uint16_t* pages, char* filename)
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_fax2ps", 1);
++#endif
++
+     if (npages > 0) {
+ 	uint16_t pn, ptotal;
+ 	int i;
+--- a/tools/rgb2ycbcr.c
++++ b/tools/rgb2ycbcr.c
+@@ -72,6 +72,11 @@
+ int
+ main(int argc, char* argv[])
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_main", 1);
++#endif
++
+ 	TIFF *in, *out;
+ 	int c;
+ #if !HAVE_DECL_OPTARG
+--- a/tools/thumbnail.c
++++ b/tools/thumbnail.c
+@@ -77,6 +77,11 @@
+ int
+ main(int argc, char* argv[])
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_main", 1);
++#endif
++
+     TIFF* in;
+     TIFF* out;
+     int c;
+--- a/tools/tiff2ps.c
++++ b/tools/tiff2ps.c
+@@ -1509,6 +1509,11 @@
+ 
+ int TIFF2PS(FILE* fd, TIFF* tif, double pgwidth, double pgheight, double lm, double bm, int center)
+   {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_TIFF2PS", 1);
++#endif
++
+   uint32_t pixwidth = 0, pixheight = 0;  /* Image width and height in pixels */
+   double ox = 0.0, oy = 0.0;  /* Offset from current Postscript origin */
+   double pswidth, psheight;   /* Original raw image width and height in points */
+@@ -2941,7 +2946,7 @@
+ 	fputs("~>\n", fd);
+ }
+ #if	defined( EXP_ASCII85ENCODER)
+-+
+ 
+ #define A85BREAKCNTR    ascii85breaklen
+ #define A85BREAKLEN     (2*MAXLINE)
+--- a/tools/tiff2rgba.c
++++ b/tools/tiff2rgba.c
+@@ -69,6 +69,11 @@
+ int
+ main(int argc, char* argv[])
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_main", 1);
++#endif
++
+ 	TIFF *in, *out;
+ 	int c;
+ #if !HAVE_DECL_OPTARG
+--- a/tools/tiffcmp.c
++++ b/tools/tiffcmp.c
+@@ -70,6 +70,11 @@
+ int
+ main(int argc, char* argv[])
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_main", 1);
++#endif
++
+ 	TIFF *tif1, *tif2;
+ 	int c, dirnum;
+ #if !HAVE_DECL_OPTARG
+--- a/tools/tiffcp.c
++++ b/tools/tiffcp.c
+@@ -179,6 +179,11 @@
+ int
+ main(int argc, char* argv[])
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_main", 1);
++#endif
++
+ 	uint16_t defconfig = (uint16_t) -1;
+ 	uint16_t deffillorder = 0;
+ 	uint32_t deftilewidth = (uint32_t) -1;
+--- a/tools/tiffinfo.c
++++ b/tools/tiffinfo.c
+@@ -68,6 +68,11 @@
+ int
+ main(int argc, char* argv[])
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_main", 1);
++#endif
++
+ 	int dirnum = -1, multiplefiles, c;
+ 	uint16_t order = 0;
+ 	TIFF* tif;
+--- a/tools/tiffsplit.c
++++ b/tools/tiffsplit.c
+@@ -59,6 +59,11 @@
+ int
+ main(int argc, char* argv[])
+ {
++
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_main", 1);
++#endif
++
+ 	TIFF *in, *out;
+ 
+ 		if (argc < 2 || argc > 3) {
