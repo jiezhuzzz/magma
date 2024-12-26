@@ -1,0 +1,3 @@
+libtiff/tif_dirwrite.c:253
+libtiff/tif_dirwrite.c:265
+libtiff/tif_dirwrite.c:196

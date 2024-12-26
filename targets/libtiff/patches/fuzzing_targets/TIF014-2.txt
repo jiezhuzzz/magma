@@ -1,0 +1,13 @@
+libtiff/tif_dir.c:1702
+libtiff/tif_dir.c:1668
+libtiff/tif_open.c:83
+tools/fax2ps.c:294
+tools/fax2ps.c:280
+tools/rgb2ycbcr.c:75
+tools/thumbnail.c:80
+tools/tiff2ps.c:1516
+tools/tiff2rgba.c:72
+tools/tiffcmp.c:73
+tools/tiffcp.c:182
+tools/tiffinfo.c:71
+tools/tiffsplit.c:62
