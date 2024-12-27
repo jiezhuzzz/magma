@@ -1,21 +1,24 @@
 diff --git a/parser.c b/parser.c
-index 04aa717..579a9a7 100644
+index 255bd254..52a7553f 100644
 --- a/parser.c
 +++ b/parser.c
-@@ -7914,6 +7914,7 @@ xmlParsePEReference(xmlParserCtxtPtr ctxt)
-             xmlChar start[4];
-             xmlCharEncoding enc;
+@@ -7988,8 +7988,8 @@ xmlParsePEReference(xmlParserCtxtPtr ctxt)
  
+ 	    if (xmlParserEntityCheck(ctxt, 0, entity, 0))
+ 	        return;
+-
+-	    if ((entity->etype == XML_EXTERNAL_PARAMETER_ENTITY) &&
 +#ifdef MAGMA_ENABLE_FIXES
- 	    if ((entity->etype == XML_EXTERNAL_PARAMETER_ENTITY) &&
++		if ((entity->etype == XML_EXTERNAL_PARAMETER_ENTITY) &&
  	        ((ctxt->options & XML_PARSE_NOENT) == 0) &&
  		((ctxt->options & XML_PARSE_DTDVALID) == 0) &&
-@@ -7922,7 +7923,17 @@ xmlParsePEReference(xmlParserCtxtPtr ctxt)
+ 		((ctxt->options & XML_PARSE_DTDLOAD) == 0) &&
+@@ -7997,7 +7997,16 @@ xmlParsePEReference(xmlParserCtxtPtr ctxt)
  		(ctxt->replaceEntities == 0) &&
  		(ctxt->validate == 0))
  		return;
+-
 +#endif
- 
 +#ifdef MAGMA_ENABLE_CANARIES
 +    MAGMA_LOG("%MAGMA_BUG%", MAGMA_AND(entity->etype == XML_EXTERNAL_PARAMETER_ENTITY, \
 +        MAGMA_AND((ctxt->options & XML_PARSE_NOENT) == 0, \

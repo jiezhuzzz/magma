@@ -1,0 +1,8 @@
+ldblib.c:366
+lua.c:65
+lua.c:77
+ldebug.c:865
+ldo.c:419
+ldo.c:469
+ldo.c:693
+ldo.c:742
