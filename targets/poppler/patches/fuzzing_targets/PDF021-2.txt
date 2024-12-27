@@ -1,0 +1,4 @@
+poppler/CairoOutputDev.cc:3434
+poppler/CairoOutputDev.cc:3406
+poppler/CairoOutputDev.cc:2017
+poppler/CairoOutputDev.cc:1963

@@ -1,0 +1,3 @@
+utils/HtmlOutputDev.cc:1457
+utils/HtmlOutputDev.cc:1477
+utils/ImageOutputDev.cc:520

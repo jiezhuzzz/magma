@@ -1,0 +1,12 @@
+poppler/XRef.cc:1514
+poppler/XRef.cc:1801
+poppler/XRef.cc:1762
+poppler/PDFDoc.cc:855
+poppler/XRef.cc:1353
+poppler/XRef.cc:1401
+poppler/PDFDoc.cc:1160
+poppler/PDFDoc.cc:1083
+poppler/PDFDoc.cc:1687
+poppler/PDFDoc.cc:1905
+poppler/PDFDoc.cc:1865
+poppler/PDFDoc.cc:1782

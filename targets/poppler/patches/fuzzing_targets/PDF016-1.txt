@@ -1,0 +1,10 @@
+poppler/Gfx.cc:649
+poppler/XRef.cc:1584
+poppler/XRef.cc:846
+poppler/XRef.cc:522
+poppler/XRef.cc:465
+poppler/XRef.cc:1143
+poppler/Parser.cc:67
+poppler/Hints.cc:171
+poppler/Linearization.cc:25
+poppler/XRef.cc:112

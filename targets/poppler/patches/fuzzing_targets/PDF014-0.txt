@@ -1,0 +1,1 @@
+poppler/XRef.cc:1673

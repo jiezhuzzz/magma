@@ -1,0 +1,6 @@
+poppler/Gfx.cc:626
+poppler/XRef.cc:1616
+poppler/XRef.cc:1138
+poppler/XRef.cc:1125
+poppler/XRef.cc:264
+poppler/XRef.cc:465
