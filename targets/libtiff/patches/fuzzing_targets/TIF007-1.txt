@@ -1,0 +1,3 @@
+libtiff/tif_dirread.c:5996
+libtiff/tif_dirread.c:5917
+libtiff/tif_dirread.c:3582
