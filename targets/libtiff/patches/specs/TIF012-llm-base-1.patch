@@ -1,0 +1,13 @@
+--- a/libtiff/tif_dir.c
++++ b/libtiff/tif_dir.c
+@@ -277,6 +277,10 @@
+ 			goto badvalue;
+         if( v != td->td_samplesperpixel )
+         {
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_TIFF_SAMPLES_PER_PIXEL", v != td->td_samplesperpixel);
++#endif
++
+ #ifdef MAGMA_ENABLE_FIXES
+             /* See http://bugzilla.maptools.org/show_bug.cgi?id=2500 */
+             if( td->td_sminsamplevalue != NULL )

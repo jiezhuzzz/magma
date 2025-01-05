@@ -1,0 +1,15 @@
+--- a/libtiff/tif_dirread.c
++++ b/libtiff/tif_dirread.c
+@@ -4311,6 +4311,12 @@
+ 	    ((tif->tif_flags&(TIFF_STRIPCHOP|TIFF_ISTILED))==TIFF_STRIPCHOP))
+         {
+             ChopUpSingleUncompressedStrip(tif);
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_TIFFReadDirectory", (tif->tif_dir.td_planarconfig == PLANARCONFIG_CONTIG &&
++              tif->tif_dir.td_nstrips == 1 &&
++              tif->tif_dir.td_compression == COMPRESSION_NONE &&
++              (tif->tif_flags & (TIFF_STRIPCHOP | TIFF_ISTILED)) == TIFF_STRIPCHOP));
++#endif
+         }
+ 
+         /* There are also uncompressed striped files with strips larger than */

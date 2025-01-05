@@ -1,0 +1,13 @@
+--- a/libtiff/tif_dirwrite.c
++++ b/libtiff/tif_dirwrite.c
+@@ -489,6 +489,10 @@
+ 	while (1)
+ 	{
+ 		ndir=0;
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_TIFFWriteDirectorySec", TIFFFieldSet(tif, FIELD_TRANSFERFUNCTION));
++#endif
++
+ 		if (isimage)
+ 		{
+ 			if (TIFFFieldSet(tif,FIELD_IMAGEDIMENSIONS))

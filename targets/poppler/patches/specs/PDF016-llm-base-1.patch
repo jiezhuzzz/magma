@@ -1,0 +1,130 @@
+--- a/poppler/Gfx.cc
++++ b/poppler/Gfx.cc
+@@ -658,6 +658,11 @@
+     numArgs = 0;
+     obj = parser->getObj();
+     while (!obj.isEOF()) {
++#ifdef MAGMA_ENABLE_CANARIES
++    if (!obj.isEOF() && recursion > MAX_RECURSION_LIMIT) {
++        MAGMA_LOG("MAGMA_RECORD_Gfx", 1);
++    }
++#endif
+         commandAborted = false;
+ 
+         // got a command - execute it
+--- a/poppler/XRef.cc
++++ b/poppler/XRef.cc
+@@ -123,6 +123,11 @@
+     ok = false;
+ 
+     objStr = xref->fetch(objStrNum, 0, recursion);
++#ifdef MAGMA_ENABLE_CANARIES
++if (nObjects > 1000000) {
++    MAGMA_LOG("MAGMA_RECORD_ObjectStream_TooManyObjects", 1);
++}
++#endif
+     if (!objStr.isStream()) {
+         return;
+     }
+@@ -478,6 +483,9 @@
+ 
+     // start up a parser, parse one token
+     parser = new Parser(nullptr, str->makeSubStream(parsePos, false, 0, Object(objNull)), true);
++#ifdef MAGMA_ENABLE_CANARIES
++MAGMA_LOG("MAGMA_RECORD_XRef_readXRef", 1);
++#endif // This records entry into readXRef and potential setup for key vulnerability conditions.
+     obj = parser->getObj(true);
+ 
+     // parse an old-style xref table
+@@ -527,6 +535,11 @@
+ 
+     while (true) {
+         obj = parser->getObj(true);
++#ifdef MAGMA_ENABLE_CANARIES
++    if (recursionDepth > MAX_SAFE_RECURSION_DEPTH) {
++        MAGMA_LOG("MAGMA_RECORD_recursion_vuln", 1);
++    }
++#endif
+         if (obj.isCmd("trailer")) {
+             break;
+         }
+@@ -944,6 +957,11 @@
+                                     ++p;
+                                 if (!strncmp(p, "obj", 3)) {
+                                     if (num >= size) {
++#ifdef MAGMA_ENABLE_CANARIES
++    if (num >= size && num >= INT_MAX - 1 - 255) {
++        MAGMA_LOG("MAGMA_RECORD_XRef_constructXRef", 1);
++    }
++#endif
+                                         if (unlikely(num >= INT_MAX - 1 - 255)) {
+                                             error(errSyntaxError, -1, "Bad object number");
+                                             return false;
+@@ -1135,6 +1153,11 @@
+ 
+ Object XRef::fetch(const Ref ref, int recursion)
+ {
++#ifdef MAGMA_ENABLE_CANARIES
++    if (recursion > MAX_SAFE_RECURSION) {
++        MAGMA_LOG("MAGMA_RECORD_XRef::fetch", 1);
++    }
++#endif
+     return fetch(ref.num, ref.gen, recursion);
+ }
+ 
+@@ -1590,6 +1613,12 @@
+ 
+     Object obj1, obj2, obj3;
+     if (((obj1 = parser.getObj(), obj1.isInt()) || obj1.isInt64()) && (obj2 = parser.getObj(), obj2.isInt()) && (obj3 = parser.getObj(), obj3.isCmd("n") || obj3.isCmd("f"))) {
++#ifdef MAGMA_ENABLE_CANARIES
++    if ((obj1.isInt() || obj1.isInt64()) && obj2.isInt() && (obj3.isCmd("n") || obj3.isCmd("f")))
++    {
++        MAGMA_LOG("MAGMA_RECORD_XRef_parseEntry", 1);
++    }
++#endif
+         if (obj1.isInt64())
+             entry->offset = obj1.getInt64();
+         else
+--- a/poppler/Parser.cc
++++ b/poppler/Parser.cc
+@@ -64,6 +64,11 @@
+ 
+ Object Parser::getObj(int recursion)
+ {
++#ifdef MAGMA_ENABLE_CANARIES
++    if (recursion > MAX_RECURSION_DEPTH) {
++        MAGMA_LOG("MAGMA_RECORD_getObj", 1);
++    }
++#endif
+     return getObj(false, nullptr, cryptRC4, 0, 0, 0, recursion);
+ }
+ 
+--- a/poppler/Hints.cc
++++ b/poppler/Hints.cc
+@@ -169,6 +169,11 @@
+ void Hints::readTables(BaseStream *str, Linearization *linearization, XRef *xref, SecurityHandler *secHdlr)
+ {
+     hintsOffset = linearization->getHintsOffset();
++#ifdef MAGMA_ENABLE_CANARIES
++    if (secHdlr && secHdlr->getEncAlgorithm() == cryptRC4) {
++        MAGMA_LOG("MAGMA_RECORD_Hints_readTables", 1);
++    }
++#endif
+     hintsLength = linearization->getHintsLength();
+     hintsOffset2 = linearization->getHintsOffset2();
+     hintsLength2 = linearization->getHintsLength2();
+--- a/poppler/Linearization.cc
++++ b/poppler/Linearization.cc
+@@ -27,6 +27,12 @@
+     str->reset();
+     parser = new Parser(nullptr, str->makeSubStream(str->getStart(), false, 0, Object(objNull)), false);
+     Object obj1 = parser->getObj();
++#ifdef MAGMA_ENABLE_CANARIES
++    // Log the recursion level and stream anomalies
++    if (recursion > MAX_RECURSION_DEPTH) {
++        MAGMA_LOG("MAGMA_RECORD_Linearization", 1);
++    }
++#endif
+     Object obj2 = parser->getObj();
+     Object obj3 = parser->getObj();
+     linDict = parser->getObj();

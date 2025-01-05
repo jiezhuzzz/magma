@@ -1,0 +1,36 @@
+--- a/parser.c
++++ b/parser.c
+@@ -2228,6 +2228,11 @@
+ 	        if ((expandPE == 0) || (IS_BLANK_CH(NXT(1))) || (NXT(1) == 0))
+                     break;
+ 	        xmlParsePEReference(ctxt);
++#ifdef MAGMA_ENABLE_CANARIES
++    if (CUR == '%' && expandPE != 0) {
++        MAGMA_LOG("MAGMA_RECORD_xmlSkipBlankChars", 1);
++    }
++#endif
+             } else if (CUR == 0) {
+                 if (ctxt->inputNr <= 1)
+                     break;
+@@ -2552,6 +2557,10 @@
+ void
+ xmlParserHandlePEReference(xmlParserCtxtPtr ctxt) {
+     switch(ctxt->instate) {
++#ifdef MAGMA_ENABLE_CANARIES
++MAGMA_LOG("MAGMA_RECORD_handlePEReference", ctxt->instate == XML_PARSER_CONTENT);
++#endif
++
+ 	case XML_PARSER_CDATA_SECTION:
+ 	    return;
+         case XML_PARSER_COMMENT:
+@@ -8372,6 +8381,10 @@
+ 	    SKIP_BLANKS;
+ 	    xmlParseMarkupDecl(ctxt);
+ 	    xmlParsePEReference(ctxt);
++#ifdef MAGMA_ENABLE_CANARIES
++    /* Log the entry when parsing PE references as it might trigger vulnerabilities */
++    MAGMA_LOG("MAGMA_RECORD_xmlParseInternalSubset", 1);
++#endif
+ 
+             /*
+              * Conditional sections are allowed from external entities included

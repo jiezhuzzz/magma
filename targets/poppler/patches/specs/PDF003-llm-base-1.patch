@@ -1,0 +1,36 @@
+--- a/utils/HtmlOutputDev.cc
++++ b/utils/HtmlOutputDev.cc
+@@ -1458,6 +1458,9 @@
+         return;
+     }
+ 
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_drawImageMask", (ignore == false && !(complexMode && !xml) && (!dumpJPEG || str->getKind() != strDCT)));
++#endif
+     // dump JPEG file
+     if (dumpJPEG && str->getKind() == strDCT) {
+         drawJpegImage(state, str);
+@@ -1482,6 +1485,9 @@
+       printf("image stream of kind %d\n", str->getKind());*/
+     // dump JPEG file
+     if (dumpJPEG && str->getKind() == strDCT && (colorMap->getNumPixelComps() == 1 || colorMap->getNumPixelComps() == 3) && !inlineImg) {
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_DrawImage_Vuln", (colorMap != nullptr) && !inlineImg && (colorMap->getNumPixelComps() > 1));
++#endif
+         drawJpegImage(state, str);
+     } else {
+ #ifdef ENABLE_LIBPNG
+--- a/utils/ImageOutputDev.cc
++++ b/utils/ImageOutputDev.cc
+@@ -533,6 +533,11 @@
+         writeRawImage(str, "jpg");
+ 
+     } else if (dumpJP2 && str->getKind() == strJPX && !inlineImg) {
++#ifdef MAGMA_ENABLE_CANARIES
++    if (colorMap && colorMap->getNumPixelComps() > sizeof(unsigned int)) {
++        MAGMA_LOG("MAGMA_RECORD_ImageOutputDev::writeImage", 1);
++    }
++#endif
+         // dump JPEG2000 file
+         writeRawImage(str, "jp2");
+ 

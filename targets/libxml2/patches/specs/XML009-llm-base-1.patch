@@ -1,0 +1,28 @@
+--- a/parser.c
++++ b/parser.c
+@@ -6955,6 +6955,13 @@
+         ctxt->instate = oldstate;
+         return;
+     }
++#ifdef MAGMA_ENABLE_CANARIES
++    // Log if we have detected an unsupported encoding error
++    if (ctxt->errNo == XML_ERR_UNSUPPORTED_ENCODING) {
++        MAGMA_LOG("MAGMA_RECORD_xmlParseTextDecl", 1);
++    }
++#endif
++
+     if ((encoding == NULL) && (ctxt->errNo == XML_ERR_OK)) {
+ 	xmlFatalErrMsg(ctxt, XML_ERR_MISSING_ENCODING,
+ 		       "Missing encoding in text declaration\n");
+@@ -10617,6 +10624,11 @@
+     }
+     xmlParseEncodingDecl(ctxt);
+     if ((ctxt->errNo == XML_ERR_UNSUPPORTED_ENCODING) ||
++#ifdef MAGMA_ENABLE_CANARIES
++    if (ctxt->errNo == XML_ERR_UNSUPPORTED_ENCODING) {
++        MAGMA_LOG("MAGMA_RECORD_xmlParseXMLDecl", 1);
++    }
++#endif
+          (ctxt->instate == XML_PARSER_EOF)) {
+ 	/*
+ 	 * The XML REC instructs us to stop parsing right here

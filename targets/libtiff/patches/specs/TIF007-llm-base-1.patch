@@ -1,0 +1,36 @@
+--- a/libtiff/tif_dirread.c
++++ b/libtiff/tif_dirread.c
+@@ -4112,6 +4112,11 @@
+ 		if (!TIFFFieldSet(tif,FIELD_BITSPERSAMPLE))
+ 		{
+ 			TIFFWarningExt(tif->tif_clientdata,module,
++#ifdef MAGMA_ENABLE_CANARIES
++    if (!TIFFFieldSet(tif,FIELD_BITSPERSAMPLE)) {
++        MAGMA_LOG("MAGMA_RECORD_TIFFReadDirectory", 1);
++    }
++#endif
+ 			    "BitsPerSample tag is missing, assuming 8 bits per sample");
+ 			if (!TIFFSetField(tif,TIFFTAG_BITSPERSAMPLE,8))
+ 				goto bad;
+@@ -5924,6 +5929,9 @@
+ 	uint32_t rowsperstrip;
+ 
+ 	bytecount = TIFFGetStrileByteCount(tif, 0);
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_ChopUpSingleUncompressedStrip", nstrips > 0 && nstrips < 1000000);
++#endif
+         /* On a newly created file, just re-opened to be filled, we */
+         /* don't want strip chop to trigger as it is going to cause issues */
+         /* later ( StripOffsets and StripByteCounts improperly filled) . */
+@@ -6010,6 +6018,11 @@
+     assert( (tif->tif_flags&(TIFF_STRIPCHOP|TIFF_ISTILED)) == TIFF_STRIPCHOP );
+     assert( stripsize > 0x7FFFFFFFUL );
+ 
++#ifdef MAGMA_ENABLE_CANARIES
++    if (stripsize > 0x7FFFFFFFUL) {
++        MAGMA_LOG("MAGMA_RECORD_TryChopUpUncompressedBigTiff - Large stripsize condition triggered", 1);
++    }
++#endif
+     /* On a newly created file, just re-opened to be filled, we */
+     /* don't want strip chop to trigger as it is going to cause issues */
+     /* later ( StripOffsets and StripByteCounts improperly filled) . */
