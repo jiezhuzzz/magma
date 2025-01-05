@@ -1,0 +1,66 @@
+--- a/pngpread.c
++++ b/pngpread.c
+@@ -195,6 +195,11 @@
+ 
+    chunk_name = png_ptr->chunk_name;
+ 
++#ifdef MAGMA_ENABLE_CANARIES
++    if (chunk_name == png_PLTE) {
++        MAGMA_LOG("MAGMA_RECORD_png_push_read_chunk", png_ptr->push_length > 3 * PNG_MAX_PALETTE_LENGTH);
++    }
++#endif
+    if (chunk_name == png_IDAT)
+    {
+       if ((png_ptr->mode & PNG_AFTER_IDAT) != 0)
+--- a/pngread.c
++++ b/pngread.c
+@@ -101,6 +101,12 @@
+       return;
+ 
+    /* Read and check the PNG file signature. */
++#ifdef MAGMA_ENABLE_CANARIES
++MAGMA_LOG("MAGMA_RECORD_png_read_info", (png_ptr->mode & PNG_HAVE_IHDR) && 
++                                      (chunk_name == png_PLTE) && 
++                                      !(png_ptr->mode & PNG_HAVE_PLTE) && 
++                                      !(png_ptr->mode & PNG_HAVE_IDAT));
++#endif
+    png_read_sig(png_ptr, info_ptr);
+ 
+    for (;;)
+@@ -790,6 +796,9 @@
+ #endif
+ 
+    do
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_handle_PLTE", png_ptr->color_type == PNG_COLOR_TYPE_PALETTE && png_ptr->num_palette > (1 << png_ptr->bit_depth));
++#endif
+    {
+       png_uint_32 length = png_read_chunk_header(png_ptr);
+       png_uint_32 chunk_name = png_ptr->chunk_name;
+--- a/pngrutil.c
++++ b/pngrutil.c
+@@ -958,6 +958,10 @@
+ #endif
+ 
+    if (length > 3*PNG_MAX_PALETTE_LENGTH || length % 3)
++#ifdef MAGMA_ENABLE_CANARIES
++    if (length > 3*PNG_MAX_PALETTE_LENGTH || length % 3)
++        MAGMA_LOG("MAGMA_RECORD_plte_length_invalid", length);
++#endif
+    {
+       png_crc_finish(png_ptr, length);
+ 
+--- a/pngwrite.c
++++ b/pngwrite.c
+@@ -1785,6 +1785,11 @@
+ 
+    /* NOTE: the caller must check for cmap != NULL and entries != 0 */
+    png_uint_32 format = image->format;
++#ifdef MAGMA_ENABLE_CANARIES
++    if (entries > PNG_MAX_PALETTE_LENGTH) {
++        MAGMA_LOG("MAGMA_RECORD_png_image_set_PLTE", entries > 256);
++    }
++#endif
+    unsigned int channels = PNG_IMAGE_SAMPLE_CHANNELS(format);
+ 
+ #   if defined(PNG_FORMAT_BGR_SUPPORTED) &&\

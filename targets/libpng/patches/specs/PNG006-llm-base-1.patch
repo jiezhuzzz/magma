@@ -1,0 +1,133 @@
+--- a/png.c
++++ b/png.c
+@@ -388,6 +388,10 @@
+    png_inforp info_ptr = NULL;
+ 
+    png_debug(1, "in png_destroy_info_struct");
++#ifdef MAGMA_ENABLE_CANARIES
++    // Log initial state of free_me to track if resource leaks from png_free_data can occur.
++    MAGMA_LOG("MAGMA_RECORD_png_destroy_info_struct", info_ptr != NULL && info_ptr->free_me != 0);
++#endif
+ 
+    if (png_ptr == NULL)
+       return;
+@@ -1172,6 +1176,11 @@
+ png_colorspace_sync_info(png_const_structrp png_ptr, png_inforp info_ptr)
+ {
+    if ((info_ptr->colorspace.flags & PNG_COLORSPACE_INVALID) != 0)
++#ifdef MAGMA_ENABLE_CANARIES
++    if ((info_ptr->colorspace.flags & PNG_COLORSPACE_INVALID) != 0) {
++        MAGMA_LOG("MAGMA_RECORD_colorspace_sync_info", 1);
++    }
++#endif
+    {
+       /* Everything is invalid */
+       info_ptr->valid &= ~(PNG_INFO_gAMA|PNG_INFO_cHRM|PNG_INFO_sRGB|
+--- a/pngread.c
++++ b/pngread.c
+@@ -100,6 +100,11 @@
+    if (png_ptr == NULL || info_ptr == NULL)
+       return;
+ 
++#ifdef MAGMA_ENABLE_CANARIES
++    if (png_ptr != NULL && info_ptr != NULL && (info_ptr->valid & PNG_INFO_eXIf) != 0) {
++        MAGMA_LOG("MAGMA_RECORD_png_read_info", 1);
++    }
++#endif
+    /* Read and check the PNG file signature. */
+    png_read_sig(png_ptr, info_ptr);
+ 
+@@ -770,6 +775,11 @@
+ #endif
+ 
+    png_debug(1, "in png_read_end");
++#ifdef MAGMA_ENABLE_CANARIES
++    if (info_ptr != NULL && (png_ptr->mode & PNG_HAVE_IHDR) != 0 && (info_ptr->valid & PNG_INFO_eXIf) == 0) {
++        MAGMA_LOG("MAGMA_RECORD_png_read_end", 1);
++    }
++#endif
+ 
+    if (png_ptr == NULL)
+       return;
+@@ -1050,6 +1060,9 @@
+     int transforms, voidp params)
+ {
+    if (png_ptr == NULL || info_ptr == NULL)
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_read_png", (png_ptr == NULL || info_ptr == NULL || info_ptr->row_pointers == NULL));
++#endif
+       return;
+ 
+    /* png_read_info() gives us all of the information from the
+--- a/pngrutil.c
++++ b/pngrutil.c
+@@ -1395,6 +1395,9 @@
+ 
+    /* If a colorspace error has already been output skip this chunk */
+    if ((png_ptr->colorspace.flags & PNG_COLORSPACE_INVALID) != 0)
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_handle_iCCP", (length >= 14 && (png_ptr->colorspace.flags & PNG_COLORSPACE_INVALID) == 0 && (png_ptr->colorspace.flags & PNG_COLORSPACE_HAVE_INTENT) == 0));
++#endif
+    {
+       png_crc_finish(png_ptr, length);
+       return;
+--- a/pngset.c
++++ b/pngset.c
+@@ -215,6 +215,11 @@
+    png_debug1(1, "in %s storage function", "hIST");
+ 
+    if (png_ptr == NULL || info_ptr == NULL)
++#ifdef MAGMA_ENABLE_CANARIES
++    if (info_ptr->num_palette != 0 && info_ptr->num_palette <= PNG_MAX_PALETTE_LENGTH && (info_ptr->free_me & PNG_FREE_HIST) != 0) {
++        MAGMA_LOG("MAGMA_RECORD_png_set_hIST", 1);
++    }
++#endif
+       return;
+ 
+    if (info_ptr->num_palette == 0 || info_ptr->num_palette
+@@ -578,6 +583,11 @@
+    png_debug1(1, "in %s storage function", "PLTE");
+ 
+    if (png_ptr == NULL || info_ptr == NULL)
++#ifdef MAGMA_ENABLE_CANARIES
++    if ((num_palette < 0) || (palette == NULL && num_palette > 0)) {
++        MAGMA_LOG("MAGMA_RECORD_png_set_PLTE", 1);
++    }
++#endif
+       return;
+ 
+    max_palette_length = (info_ptr->color_type == PNG_COLOR_TYPE_PALETTE) ?
+@@ -696,6 +706,9 @@
+    png_debug1(1, "in %s storage function", "iCCP");
+ 
+    if (png_ptr == NULL || info_ptr == NULL || name == NULL || profile == NULL)
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_set_iCCP", (png_ptr != NULL && info_ptr != NULL && name != NULL && profile != NULL));
++#endif
+       return;
+ 
+    if (compression_type != PNG_COMPRESSION_TYPE_BASE)
+@@ -1002,6 +1015,11 @@
+ 
+    if (trans_alpha != NULL)
+    {
++#ifdef MAGMA_ENABLE_CANARIES
++    if (trans_alpha != NULL) {
++        MAGMA_LOG("MAGMA_RECORD_png_set_tRNS", (trans_alpha != NULL && num_trans > PNG_MAX_PALETTE_LENGTH));
++    }
++#endif
+        /* It may not actually be necessary to set png_ptr->trans_alpha here;
+         * we do it for backward compatibility with the way the png_handle_tRNS
+         * function used to do the allocation.
+@@ -1552,6 +1570,11 @@
+       return;
+ 
+    if (info_ptr->row_pointers != NULL &&
++#ifdef MAGMA_ENABLE_CANARIES
++    if (info_ptr->row_pointers != NULL && (info_ptr->row_pointers != row_pointers)) {
++        MAGMA_LOG("MAGMA_RECORD_png_set_rows", 1);
++    }
++#endif
+        (info_ptr->row_pointers != row_pointers))
+       png_free_data(png_ptr, info_ptr, PNG_FREE_ROWS, 0);
+ 

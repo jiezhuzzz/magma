@@ -1,0 +1,45 @@
+--- a/pngread.c
++++ b/pngread.c
+@@ -271,6 +271,13 @@
+    if (png_ptr != NULL)
+    {
+       if ((png_ptr->flags & PNG_FLAG_ROW_INIT) == 0)
++#ifdef MAGMA_ENABLE_CANARIES
++    if ((png_ptr->transformations & PNG_EXPAND) != 0 &&
++        info_ptr->color_type == PNG_COLOR_TYPE_PALETTE &&
++        png_ptr->palette == NULL) {
++        MAGMA_LOG("MAGMA_RECORD_png_read_update_info", "NULL palette with EXPAND transformation");
++    }
++#endif
+       {
+          png_read_start_row(png_ptr);
+ 
+--- a/pngrutil.c
++++ b/pngrutil.c
+@@ -920,6 +920,14 @@
+    png_debug(1, "in png_handle_PLTE");
+ 
+    if ((png_ptr->mode & PNG_HAVE_IHDR) == 0)
++#ifdef MAGMA_ENABLE_CANARIES
++    // Log triggering condition based on mode flags and other considerations.
++    if ((png_ptr->mode & PNG_HAVE_PLTE) != 0 || length > 3*PNG_MAX_PALETTE_LENGTH || length % 3)
++    {
++        MAGMA_LOG("MAGMA_RECORD_png_handle_PLTE", 1);
++    }
++#endif
++
+       png_chunk_error(png_ptr, "missing IHDR");
+ 
+    /* Moved to before the 'after IDAT' check below because otherwise duplicate
+--- a/pngwrite.c
++++ b/pngwrite.c
+@@ -1783,6 +1783,9 @@
+    int entries = image->colormap_entries > 256 ? 256 :
+        (int)image->colormap_entries;
+ 
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_png_image_set_PLTE", (display->image->colormap_entries > 256));
++#endif
+    /* NOTE: the caller must check for cmap != NULL and entries != 0 */
+    png_uint_32 format = image->format;
+    unsigned int channels = PNG_IMAGE_SAMPLE_CHANNELS(format);

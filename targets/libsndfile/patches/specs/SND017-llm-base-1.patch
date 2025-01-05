@@ -1,0 +1,42 @@
+--- a/src/rf64.c
++++ b/src/rf64.c
+@@ -199,6 +199,12 @@
+ 
+ 	while (!done)
+ 	{
++#ifdef MAGMA_ENABLE_CANARIES
++    if (psf->sf.channels > SF_MAX_CHANNELS) {
++        MAGMA_LOG("MAGMA_RECORD_rf64_read_header", psf->sf.channels);
++    }
++#endif
++
+ 		marker = chunk_size = 0 ;
+ 		psf_binheader_readf (psf, "em4", &marker, &chunk_size) ;
+ 
+--- a/src/w64.c
++++ b/src/w64.c
+@@ -284,6 +284,10 @@
+ 
+ 					if ((error = wavlike_read_fmt_chunk (psf, (int) chunk_size)))
+ 						return error ;
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_w64_read_header", 1);
++#endif
++    if ((error = wavlike_read_fmt_chunk(psf, (int)chunk_size)))
+ 
+ 					if (chunk_size % 8)
+ 						psf_binheader_readf (psf, "j", 8 - (chunk_size % 8)) ;
+--- a/src/wav.c
++++ b/src/wav.c
+@@ -310,6 +310,11 @@
+ 	** lots of code copying here, we'll set the psf->rwf_endian flag once here,
+ 	** and never specify endian-ness for all other header ops/
+ 	*/
++#ifdef MAGMA_ENABLE_CANARIES
++    if (wav_fmt->msadpcm.numcoeffs > ARRAY_LEN(wav_fmt->msadpcm.coeffs)) {
++        MAGMA_LOG("TRIGGER_FMT_COEFFS_OVERFLOW", 1);
++    }
++#endif
+ 	psf->rwf_endian = (marker == RIFF_MARKER) ? SF_ENDIAN_LITTLE : SF_ENDIAN_BIG ;
+ 
+ 	while (! done)

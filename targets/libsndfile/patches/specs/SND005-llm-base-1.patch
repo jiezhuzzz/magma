@@ -1,0 +1,14 @@
+--- a/src/aiff.c
++++ b/src/aiff.c
+@@ -429,6 +429,11 @@
+ 	{	unsigned	marker ;
+ 		size_t jump = chunk_size & 1 ;
+ 
++#ifdef MAGMA_ENABLE_CANARIES
++    if (layout_tag != (layout_tag & 0xFFFF)) {
++        MAGMA_LOG("MAGMA_RECORD_chanmap_layout", 1);
++    }
++#endif
+ 		marker = chunk_size = 0 ;
+ 		psf_binheader_readf (psf, "Ejm4", jump, &marker, &chunk_size) ;
+ 		if (marker == 0)

@@ -1,0 +1,46 @@
+--- a/src/rf64.c
++++ b/src/rf64.c
+@@ -187,6 +187,14 @@
+ 		return SFE_INTERNAL ;
+ 	wav_fmt = &wpriv->wav_fmt ;
+ 
++#ifdef MAGMA_ENABLE_CANARIES
++    if (wpriv != NULL && psf->container_data != NULL) {
++        WAV_FMT *test_wav_fmt = &wpriv->wav_fmt;
++        if (test_wav_fmt->ext.channelmask == 0) {
++            MAGMA_LOG("MAGMA_RECORD_rf64_read_header", "Possible buffer vulnerability: Channel mask issues detected early.");
++        }
++    }
++#endif // MAGMA_ENABLE_CANARIES
+ 	/* Set position to start of file to begin reading header. */
+ 	psf_binheader_readf (psf, "pmmm", 0, &marker, marks, marks + 1) ;
+ 	if (marker != RF64_MARKER || marks [1] != WAVE_MARKER)
+--- a/src/w64.c
++++ b/src/w64.c
+@@ -232,6 +232,11 @@
+ 		return SFE_INTERNAL ;
+ 	wav_fmt = &wpriv->wav_fmt ;
+ 
++#ifdef MAGMA_ENABLE_CANARIES
++    if (wpriv && (psf->sf.channels > SF_MAX_CHANNELS || psf->sf.channels < 1)) {
++        MAGMA_LOG("MAGMA_RECORD_w64", 1);
++    }
++#endif
+ 	/* Set position to start of file to begin reading header. */
+ 	psf_binheader_readf (psf, "p", 0) ;
+ 
+--- a/src/wav.c
++++ b/src/wav.c
+@@ -324,6 +324,12 @@
+ 			} ;
+ 
+ 		psf_store_read_chunk_u32 (&psf->rchunks, marker, psf_ftell (psf), chunk_size) ;
++
++#ifdef MAGMA_ENABLE_CANARIES
++    if (chunk_size >= psf->filelength) {
++        MAGMA_LOG("MAGMA_RECORD_chunk_size_too_large", chunk_size);
++    }
++#endif
+ 
+ 		switch (marker)
+ 		{	case RIFF_MARKER :

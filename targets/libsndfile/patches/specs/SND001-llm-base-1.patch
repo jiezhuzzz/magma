@@ -1,0 +1,13 @@
+--- a/src/paf.c
++++ b/src/paf.c
+@@ -106,6 +106,10 @@
+ 
+ 	if (psf->file.mode == SFM_READ || (psf->file.mode == SFM_RDWR && psf->filelength > 0))
+ 	{	if ((error = paf_read_header (psf)))
++#ifdef MAGMA_ENABLE_CANARIES
++    MAGMA_LOG("MAGMA_RECORD_paf_open", psf->sf.channels < 1 || psf->sf.channels > SF_MAX_CHANNELS);
++#endif
++
+ 			return error ;
+ 		} ;
+ 
