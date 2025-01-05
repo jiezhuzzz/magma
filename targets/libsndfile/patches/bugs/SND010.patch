@@ -1,16 +1,16 @@
 diff --git a/src/common.c b/src/common.c
-index c9737a9..dbd93f1 100644
+index 5f09ec0e..b015157c 100644
 --- a/src/common.c
 +++ b/src/common.c
-@@ -686,6 +686,7 @@ psf_binheader_writef (SF_PRIVATE *psf, const char *format, ...)
+@@ -695,6 +695,7 @@ psf_binheader_writef (SF_PRIVATE *psf, const char *format, ...)
  					strptr = va_arg (argptr, char *) ;
  					size = strlen (strptr) + 1 ;
  
 +#ifdef MAGMA_ENABLE_FIXES
  					if (psf->header.indx + 4 + (sf_count_t) size + (sf_count_t) (size & 1) > psf->header.len && psf_bump_header_allocation (psf, 4 + size + (size & 1)))
- 						return count ;
+ 						break ;
  
-@@ -695,6 +696,25 @@ psf_binheader_writef (SF_PRIVATE *psf, const char *format, ...)
+@@ -704,6 +705,25 @@ psf_binheader_writef (SF_PRIVATE *psf, const char *format, ...)
  						header_put_le_int (psf, size + (size & 1)) ;
  					memcpy (&(psf->header.ptr [psf->header.indx]), strptr, size) ;
  					size += (size & 1) ;
