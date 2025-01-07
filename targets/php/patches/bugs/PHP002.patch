@@ -1,10 +1,10 @@
 diff --git a/ext/exif/exif.c b/ext/exif/exif.c
-index 57ca8fdaa6..d75b50a4e5 100644
+index 74dba4bf69..a9adbb2b2b 100644
 --- a/ext/exif/exif.c
 +++ b/ext/exif/exif.c
-@@ -4019,7 +4019,14 @@ static int exif_process_IFD_in_TIFF(image_info_type *ImageInfo, size_t dir_offse
- 		return FALSE;
- 	}
+@@ -4033,7 +4033,14 @@ static bool exif_process_IFD_in_TIFF_impl(image_info_type *ImageInfo, size_t dir
+ 	int entry_tag , entry_type;
+ 	tag_table_type tag_table = exif_get_tag_table(section_index);
  
 +#ifdef MAGMA_ENABLE_FIXES
  	if (ImageInfo->FileSize >= 2 && ImageInfo->FileSize - 2 >= dir_offset) {

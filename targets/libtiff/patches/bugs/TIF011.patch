@@ -1,9 +1,9 @@
 diff --git a/libtiff/tif_print.c b/libtiff/tif_print.c
-index a073794..0a0e691 100644
+index 6e9f58ff..e5ee247f 100644
 --- a/libtiff/tif_print.c
 +++ b/libtiff/tif_print.c
-@@ -544,9 +544,18 @@ TIFFPrintDirectory(TIFF* tif, FILE* fd, long flags)
- 				uint16 i;
+@@ -539,9 +539,18 @@ TIFFPrintDirectory(TIFF* tif, FILE* fd, long flags)
+ 				uint16_t i;
  				fprintf(fd, "    %2ld: %5"PRIu16,
  				    l, td->td_transferfunction[0][l]);
 +#ifdef MAGMA_ENABLE_FIXES
