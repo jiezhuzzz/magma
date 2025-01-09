@@ -28,9 +28,7 @@ echo "Base patch file $base_patch_file applied."
 
 # apply fuzzing patch
 fuzzing_patch_file="$TARGET/patches/specs/${1}.patch"
-if [ ! -f "$fuzzing_patch_file" ]; then
-    echo "Patch file $fuzzing_patch_file not found."
-    exit 1
+if [ -f "$fuzzing_patch_file" ]; then
+    patch -p1 -d "$TARGET/repo" < "$fuzzing_patch_file"
+    echo "Fuzzing patch file $fuzzing_patch_file applied."
 fi
-patch -p1 -d "$TARGET/repo" < "$fuzzing_patch_file"
-echo "Fuzzing patch file $fuzzing_patch_file applied."
