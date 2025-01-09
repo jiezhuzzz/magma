@@ -47,6 +47,7 @@ def generate_captain_config(args: argparse.Namespace) -> None:
         f"WORKERS={int(os.cpu_count() * 0.9)}",
         f"TIMEOUT={args.timeout}",
         f"POLL={args.poll}",
+        f"EARLY_EXIT={args.early_exit}",
         f"FUZZERS=({' '.join(args.fuzzers)})"
     ]
 
@@ -73,7 +74,7 @@ def generate_captain_config(args: argparse.Namespace) -> None:
 
     print(f"Total cores needed: {cnt}.")
 
-    Path("captainrc").write_text("\n".join(config))
+    Path("captainrc").write_text("\n".join(config) + "\n")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -83,6 +84,7 @@ if __name__ == "__main__":
     parser.add_argument("--repeat", type=int, default=10)
     parser.add_argument("--timeout", type=str, default="24h")
     parser.add_argument("--poll", type=int, default=5)
+    parser.add_argument("--early-exit", type=int, default=0)
     args = parser.parse_args()
 
     generate_captain_config(args)
