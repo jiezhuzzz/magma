@@ -69,6 +69,11 @@ void magma_log(const char *bug, int condition)
     pcanary_t prod_canary   = stor_get(data_ptr->producer_buffer, bug);
     prod_canary->reached   += 1         & (magma_faulty ^ 1);
     prod_canary->triggered += (bool)condition & (magma_faulty ^ 1);
+#ifdef MAGMA_EARLY_EXIT
+    if (! condition) { // if the condition is not satisfied, then we exit
+        exit(1);
+    }
+#endif
     if (data_ptr->consumed) {
         memcpy(data_ptr->consumer_buffer, data_ptr->producer_buffer, sizeof(data_t));
         // memory barrier

@@ -43,6 +43,9 @@ fi
 if [ ! -z $HARDEN ]; then
     harden_flag="--build-arg harden=1"
 fi
+if [ ! -z $EARLY_EXIT ]; then
+    early_exit_flag="--build-arg early_exit=1"
+fi
 
 ${CONTAINER_ENGINE:-docker} build -t "$IMG_NAME" \
     --build-arg fuzzer_name="$FUZZER" \
@@ -50,7 +53,7 @@ ${CONTAINER_ENGINE:-docker} build -t "$IMG_NAME" \
     --build-arg patch_name="$PATCH" \
     --build-arg USER_ID=$(id -u $USER) \
     --build-arg GROUP_ID=$(id -g $USER) \
-    $mode_flag $isan_flag $harden_flag \
+    $mode_flag $isan_flag $harden_flag $early_exit_flag \
     -f "$MAGMA/docker/Dockerfile" "$MAGMA"
 set +x
 
