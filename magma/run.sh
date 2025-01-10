@@ -25,7 +25,9 @@ mkdir -p "$MONITOR"
 cd "$SHARED"
 
 # prune the seed corpus for any fault-triggering test-cases
-for seed in "$TARGET/corpus/$PROGRAM"/*; do
+seeds=($(find "$TARGET/corpus/$PROGRAM" -type f))
+echo "seeds: ${seeds[@]}"
+for seed in "${seeds[@]}"; do
     out="$("$MAGMA"/runonce.sh "$seed")"
     code=$?
 
@@ -35,9 +37,7 @@ for seed in "$TARGET/corpus/$PROGRAM"/*; do
     fi
 done
 
-shopt -s nullglob
-seeds=("$1"/*)
-shopt -u nullglob
+seeds=($(find "$TARGET/corpus/$PROGRAM" -type f))
 if [ ${#seeds[@]} -eq 0 ]; then
     echo "No seeds remaining! Campaign will not be launched."
     exit 1
