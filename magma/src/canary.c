@@ -83,7 +83,7 @@ void magma_log(const char *bug, int condition)
         data_ptr->consumed = false;
     }
 
-    magma_faulty = magma_faulty | (bool)condition;
+    // magma_faulty = magma_faulty | (bool)condition;
 
 #ifdef MAGMA_HARDEN_CANARIES
     magma_protect(0);
