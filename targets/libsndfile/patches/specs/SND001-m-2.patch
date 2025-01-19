@@ -1,0 +1,13 @@
+diff --git a/src/sndfile.c b/src/sndfile.c
+index 365c1361..692b6e05 100644
+--- a/src/sndfile.c
++++ b/src/sndfile.c
+@@ -3114,6 +3114,9 @@ psf_open_file (SF_PRIVATE *psf, SF_INFO *sfinfo)
+ 			psf->sf.format = format_from_extension (psf) ;
+ 		} ;
+ 
++#ifdef MAGMA_ENABLE_CANARIES
++	MAGMA_LOG("paf", SF_CONTAINER (psf->sf.format) == SF_FORMAT_PAF);
++#endif
+ 	/* Prevent unnecessary seeks */
+ 	psf->last_op = psf->file.mode ;
