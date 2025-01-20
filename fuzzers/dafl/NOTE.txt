@@ -1,0 +1,17 @@
+SEQUENCE
+
+${MAGMA}/preinstall.sh
+${MAGMA}/prebuild.sh
+
+^ ${FUZZER}/preinstall.sh # build llvm, apt-get install packages for fuzzer, sparrow
+^ ${FUZZER}/fetch.sh # fetch smake, sparrow and fuzzer from github
+^ ${FUZZER}/build.sh # build make fuzzer
+-----------------------------------------
+
+${TARGET}/preinstall.sh # apt-get install packages
+${TARGET}/fetch.sh # fetch lib from github
+${MAGMA}/apply_patches.sh # find and apply all patches
+
+-> ${FUZZER}/instrument.sh
+  -> $MAGMA/build.sh
+  -> $TARGET/build.sh # build make target
