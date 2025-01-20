@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:16.04
 
 # TODO remove sudo for user "magma" to avoid unwanted priv escalation from
 # other attack vectors.
@@ -53,40 +53,40 @@ COPY --chown=magma:magma ${magma_root}/${fuzzer_path} ${FUZZER}/
 RUN ${FUZZER}/preinstall.sh
 USER magma:magma
 RUN ${FUZZER}/fetch.sh
-RUN ${FUZZER}/build.sh
+# RUN ${FUZZER}/build.sh
 
-ARG target_name
-ARG target_path=targets/${target_name}
-ENV TARGET 	${MAGMA_R}/${target_path}
-USER root:root
-RUN mkdir -p ${TARGET} && chown magma:magma ${TARGET}
-COPY --chown=magma:magma ${magma_root}/${target_path} ${TARGET}/
-RUN ${TARGET}/preinstall.sh
-USER magma:magma
-RUN ${TARGET}/fetch.sh
-ARG patch_name
-RUN ${MAGMA}/apply_patches.sh ${patch_name}
+# ARG target_name
+# ARG target_path=targets/${target_name}
+# ENV TARGET 	${MAGMA_R}/${target_path}
+# USER root:root
+# RUN mkdir -p ${TARGET} && chown magma:magma ${TARGET}
+# COPY --chown=magma:magma ${magma_root}/${target_path} ${TARGET}/
+# RUN ${TARGET}/preinstall.sh
+# USER magma:magma
+# RUN ${TARGET}/fetch.sh
+# ARG patch_name
+# RUN ${MAGMA}/apply_patches.sh ${patch_name}
 
-## Configuration parameters
-ARG isan
-ARG harden
-ARG canaries
-ARG fixes
-ARG early_exit
+# ## Configuration parameters
+# ARG isan
+# ARG harden
+# ARG canaries
+# ARG fixes
+# ARG early_exit
 
-ARG ISAN_FLAG=${isan:+-DMAGMA_FATAL_CANARIES}
-ARG HARDEN_FLAG=${harden:+-DMAGMA_HARDEN_CANARIES}
-ARG CANARIES_FLAG=${canaries:+-DMAGMA_ENABLE_CANARIES}
-ARG FIXES_FLAG=${fixes:+-DMAGMA_ENABLE_FIXES}
-ARG EARLY_EXIT_FLAG=${early_exit:+-DMAGMA_EARLY_EXIT}
-ARG BUILD_FLAGS="-include ${MAGMA}/src/canary.h ${CANARIES_FLAG} ${FIXES_FLAG} ${ISAN_FLAG} ${HARDEN_FLAG} ${EARLY_EXIT_FLAG} -g -O0"
+# ARG ISAN_FLAG=${isan:+-DMAGMA_FATAL_CANARIES}
+# ARG HARDEN_FLAG=${harden:+-DMAGMA_HARDEN_CANARIES}
+# ARG CANARIES_FLAG=${canaries:+-DMAGMA_ENABLE_CANARIES}
+# ARG FIXES_FLAG=${fixes:+-DMAGMA_ENABLE_FIXES}
+# ARG EARLY_EXIT_FLAG=${early_exit:+-DMAGMA_EARLY_EXIT}
+# ARG BUILD_FLAGS="-include ${MAGMA}/src/canary.h ${CANARIES_FLAG} ${FIXES_FLAG} ${ISAN_FLAG} ${HARDEN_FLAG} ${EARLY_EXIT_FLAG} -g -O0"
 
-ENV CFLAGS ${BUILD_FLAGS}
-ENV CXXFLAGS ${BUILD_FLAGS}
-ENV LIBS -l:magma.o -lrt
-ENV LDFLAGS -L"${OUT}" -g
-# ENV AFL_DONT_OPTIMIZE 1
+# ENV CFLAGS ${BUILD_FLAGS}
+# ENV CXXFLAGS ${BUILD_FLAGS}
+# ENV LIBS -l:magma.o -lrt
+# ENV LDFLAGS -L"${OUT}" -g
+# # ENV AFL_DONT_OPTIMIZE 1
 
-RUN ${FUZZER}/instrument.sh
+# RUN ${FUZZER}/instrument.sh
 
-ENTRYPOINT "${MAGMA}/run.sh"
+# ENTRYPOINT "${MAGMA}/run.sh"

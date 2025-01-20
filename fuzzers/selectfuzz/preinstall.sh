@@ -1,34 +1,59 @@
 #!/bin/bash
-set -e
+set -ex
 
-apt-get update && \
-    apt-get install -y make build-essential clang-9 git wget
+apt-get update &&
+    apt-get install -y nano htop autoconf automake build-essential \
+        libtool cmake git software-properties-common gperf libselinux1-dev \
+        bison texinfo flex zlib1g-dev libexpat1-dev libmpg123-dev wget curl python3-pip \
+        unzip pkg-config clang llvm-dev
 
-update-alternatives \
-  --install /usr/lib/llvm              llvm             /usr/lib/llvm-9  20 \
-  --slave   /usr/bin/llvm-config       llvm-config      /usr/bin/llvm-config-9  \
-    --slave   /usr/bin/llvm-ar           llvm-ar          /usr/bin/llvm-ar-9 \
-    --slave   /usr/bin/llvm-as           llvm-as          /usr/bin/llvm-as-9 \
-    --slave   /usr/bin/llvm-bcanalyzer   llvm-bcanalyzer  /usr/bin/llvm-bcanalyzer-9 \
-    --slave   /usr/bin/llvm-c-test       llvm-c-test      /usr/bin/llvm-c-test-9 \
-    --slave   /usr/bin/llvm-cov          llvm-cov         /usr/bin/llvm-cov-9 \
-    --slave   /usr/bin/llvm-diff         llvm-diff        /usr/bin/llvm-diff-9 \
-    --slave   /usr/bin/llvm-dis          llvm-dis         /usr/bin/llvm-dis-9 \
-    --slave   /usr/bin/llvm-dwarfdump    llvm-dwarfdump   /usr/bin/llvm-dwarfdump-9 \
-    --slave   /usr/bin/llvm-extract      llvm-extract     /usr/bin/llvm-extract-9 \
-    --slave   /usr/bin/llvm-link         llvm-link        /usr/bin/llvm-link-9 \
-    --slave   /usr/bin/llvm-mc           llvm-mc          /usr/bin/llvm-mc-9 \
-    --slave   /usr/bin/llvm-nm           llvm-nm          /usr/bin/llvm-nm-9 \
-    --slave   /usr/bin/llvm-objdump      llvm-objdump     /usr/bin/llvm-objdump-9 \
-    --slave   /usr/bin/llvm-ranlib       llvm-ranlib      /usr/bin/llvm-ranlib-9 \
-    --slave   /usr/bin/llvm-readobj      llvm-readobj     /usr/bin/llvm-readobj-9 \
-    --slave   /usr/bin/llvm-rtdyld       llvm-rtdyld      /usr/bin/llvm-rtdyld-9 \
-    --slave   /usr/bin/llvm-size         llvm-size        /usr/bin/llvm-size-9 \
-    --slave   /usr/bin/llvm-stress       llvm-stress      /usr/bin/llvm-stress-9 \
-    --slave   /usr/bin/llvm-symbolizer   llvm-symbolizer  /usr/bin/llvm-symbolizer-9 \
-    --slave   /usr/bin/llvm-tblgen       llvm-tblgen      /usr/bin/llvm-tblgen-9
+# unsupport 24
+python3 -m pip install --upgrade pip==20.3
 
-update-alternatives \
-  --install /usr/bin/clang                 clang                  /usr/bin/clang-9     20 \
-  --slave   /usr/bin/clang++               clang++                /usr/bin/clang++-9 \
-  --slave   /usr/bin/clang-cpp             clang-cpp              /usr/bin/clang-cpp-9
+apt update &&
+   apt install -y sudo curl wget build-essential make cmake ninja-build git subversion binutils-gold binutils-dev python-dev python3 python3-dev python3-pip autoconf automake libtool-bin python-bs4 libclang-4.0-dev gawk pkg-config
+
+python3 -m pip install networkx pydot pydotplus
+
+# llvm 4.0
+mkdir -p /build 
+cd /build 
+wget http://releases.llvm.org/4.0.0/llvm-4.0.0.src.tar.xz \
+    http://releases.llvm.org/4.0.0/cfe-4.0.0.src.tar.xz \
+    http://releases.llvm.org/4.0.0/compiler-rt-4.0.0.src.tar.xz \
+    http://releases.llvm.org/4.0.0/libcxx-4.0.0.src.tar.xz \
+    http://releases.llvm.org/4.0.0/libcxxabi-4.0.0.src.tar.xz 
+tar xf llvm-4.0.0.src.tar.xz 
+tar xf cfe-4.0.0.src.tar.xz 
+tar xf compiler-rt-4.0.0.src.tar.xz 
+tar xf libcxx-4.0.0.src.tar.xz 
+tar xf libcxxabi-4.0.0.src.tar.xz 
+rm *.tar.xz 
+mv cfe-4.0.0.src /build/llvm-4.0.0.src/tools/clang 
+mv compiler-rt-4.0.0.src /build/llvm-4.0.0.src/projects/compiler-rt 
+mv libcxx-4.0.0.src /build/llvm-4.0.0.src/projects/libcxx 
+mv libcxxabi-4.0.0.src /build/llvm-4.0.0.src/projects/libcxxabi 
+mkdir -p build-llvm/llvm; cd build-llvm/llvm 
+cmake -G "Ninja" \
+      -DLIBCXX_ENABLE_SHARED=OFF \
+      -DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=ON \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DLLVM_TARGETS_TO_BUILD="X86" \
+      -DLLVM_BINUTILS_INCDIR=/usr/include \
+      /build/llvm-4.0.0.src
+
+ninja 
+ninja install 
+mkdir /usr/lib/bfd-plugins 
+cp /usr/local/lib/libLTO.so /usr/lib/bfd-plugins 
+cp /usr/local/lib/LLVMgold.so /usr/lib/bfd-plugins
+
+mkdir -p /build/build-llvm/msan 
+cd /build/build-llvm/msan 
+cmake -G "Ninja" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++  \
+     -DLLVM_USE_SANITIZER=Memory -DCMAKE_INSTALL_PREFIX=/usr/msan/ \
+           -DLIBCXX_ENABLE_SHARED=OFF -DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=ON  \
+                -DCMAKE_BUILD_TYPE=Release -DLLVM_TARGETS_TO_BUILD="X86"  \
+           /build/llvm-4.0.0.src 
+ninja cxx
+ninja install-cxx    
