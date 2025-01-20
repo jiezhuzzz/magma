@@ -15,7 +15,6 @@ extern "C" {
 #include <stdbool.h>
 
 static pstored_data_t data_ptr = NULL;
-static int magma_faulty = 0;
 
 static void magma_protect(int write)
 {
@@ -55,6 +54,11 @@ static bool magma_init(void)
     }
 }
 
+bool is_canary(const char *bug)
+{
+    return strstr(bug, "MAGMA_BUG") != NULL;
+}
+
 void magma_log(const char *bug, int condition)
 {
 #ifndef MAGMA_DISABLE_CANARIES
@@ -63,7 +67,7 @@ void magma_log(const char *bug, int condition)
     }
 
 #ifdef MAGMA_EARLY_EXIT
-    if (! condition) { // if the condition is not satisfied, then we exit
+    if (!condition && !is_canary(bug)) { // if the condition is not satisfied, and current log is not a canary, then exit
         exit(1);
     }
 #endif
@@ -73,8 +77,8 @@ void magma_log(const char *bug, int condition)
 #endif
 
     pcanary_t prod_canary   = stor_get(data_ptr->producer_buffer, bug);
-    prod_canary->reached   += 1         & (magma_faulty ^ 1);
-    prod_canary->triggered += (bool)condition & (magma_faulty ^ 1);
+    prod_canary->reached   += 1;
+    prod_canary->triggered += (bool)condition;
     
     if (data_ptr->consumed) {
         memcpy(data_ptr->consumer_buffer, data_ptr->producer_buffer, sizeof(data_t));
@@ -82,8 +86,6 @@ void magma_log(const char *bug, int condition)
         __sync_synchronize();
         data_ptr->consumed = false;
     }
-
-    // magma_faulty = magma_faulty | (bool)condition;
 
 #ifdef MAGMA_HARDEN_CANARIES
     magma_protect(0);
