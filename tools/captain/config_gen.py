@@ -18,6 +18,7 @@ PROGRAMS: Dict[str, List[str]] = {
     "php": ["json", "exif", "unserialize", "parser"],
     "poppler": ["pdf_fuzzer", "pdfimages", "pdftoppm"],
     "sqlite3": ["sqlite3_fuzz"],
+    "demo": ["demo"]
 }
 
 # Map of patch prefixes to target names
@@ -30,7 +31,8 @@ PATCH_TO_TARGET = {
     "SSL": "openssl",
     "PHP": "php",
     "PDF": "poppler",
-    "SQL": "sqlite3"
+    "SQL": "sqlite3",
+    "DEM": "demo"
 }
 
 def get_target_from_patch(patch_name: str) -> str:
@@ -46,10 +48,12 @@ def generate_captain_config(args: argparse.Namespace) -> None:
         f"REPEAT={args.repeat}",
         f"WORKERS={int(os.cpu_count() * 0.9)}",
         f"TIMEOUT={args.timeout}",
-        f"POLL={args.poll}",
-        f"EARLY_EXIT={args.early_exit}",
+        f"POLL={args.poll}", 
         f"FUZZERS=({' '.join(args.fuzzers)})"
     ]
+
+    if args.early_exit:
+        config.append("EARLY_EXIT=1")
 
     # Get unique targets from patches
     targets = {get_target_from_patch(patch) for patch in args.patches}
@@ -84,7 +88,7 @@ if __name__ == "__main__":
     parser.add_argument("--repeat", type=int, default=10)
     parser.add_argument("--timeout", type=str, default="24h")
     parser.add_argument("--poll", type=int, default=5)
-    parser.add_argument("--early-exit", type=int, default=0)
+    parser.add_argument("--early-exit", type=bool, default=False)
     args = parser.parse_args()
 
     generate_captain_config(args)
