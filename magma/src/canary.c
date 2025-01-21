@@ -107,3 +107,8 @@ fatal: (void)0;
 #ifdef __cplusplus
 }
 #endif
+
+void magma_exit(void)
+{
+    exit(1);
+}
