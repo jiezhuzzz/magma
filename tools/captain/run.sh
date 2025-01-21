@@ -35,7 +35,8 @@ TMPFS_SIZE=${TMPFS_SIZE:-50g}
 export POLL=${POLL:-5}
 export TIMEOUT=${TIMEOUT:-1m}
 
-WORKDIR="$(realpath "$WORKDIR")"
+# WORKDIR="$(realpath "$WORKDIR")"
+WORKDIR=$MAGMA/workdir/$(basename "$WORKDIR")
 export ARDIR="$WORKDIR/ar"
 export CACHEDIR="$WORKDIR/cache"
 export LOGDIR="$WORKDIR/log"
@@ -235,6 +236,15 @@ cleanup()
         echo_time "Obtaining sudo permissions to umount tmpfs"
         sudo umount "$CACHEDIR"
     fi
+
+    echo_time "Extracting results"
+
+    if [ ! -d $MAGMA/results ]; then
+        mkdir -p $MAGMA/results
+    fi
+
+    RES_NAME=$(basename "$WORKDIR")
+    uv run $MAGMA/tools/benchd/exp2json.py $WORKDIR $MAGMA/results/$RES_NAME.json
 }
 
 trap cleanup EXIT
