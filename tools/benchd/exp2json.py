@@ -123,8 +123,8 @@ def generate_monitor_df(dumpdir, campaign):
     # use a list in case pd.DataFrame() can pre-allocate ahead of time
     rows = list(row_generator())
     if len(rows) == 0:
-        workdir, _, fuzzer, target, program, run = path_split_last(campaign, 5)
-        name = f"{fuzzer}/{target}/{program}/{run}"
+        workdir, _, fuzzer, target, program, patch, run = path_split_last(campaign, 6)
+        name = f"{fuzzer}/{target}/{program}/{patch}/{run}"
         logfile = os.path.join(workdir, "log",
             f"{name.replace('/', '_')}_container.log")
         logging.warning(
@@ -141,7 +141,7 @@ def generate_monitor_df(dumpdir, campaign):
 
 def process_one_campaign(path):
     logging.info("Processing %s", path)
-    _, fuzzer, target, program, run = path_split_last(path, 4)
+    _, fuzzer, target, program, patch, run = path_split_last(path, 5)
 
     tarball = os.path.join(path, "ball.tar")
     istarball = False
@@ -157,14 +157,14 @@ def process_one_campaign(path):
     try:
         df = generate_monitor_df(os.path.join(dumpdir, "monitor"), path)
     except Exception as ex:
-        name = f"{fuzzer}/{target}/{program}/{run}"
+        name = f"{fuzzer}/{target}/{program}/{patch}/{run}"
         logging.exception("Encountered exception when processing %s. Details: "
             "%s", name, ex)
     finally:
         if istarball:
             clear_dir(dumpdir)
             os.rmdir(dumpdir)
-    return fuzzer, target, program, run, df
+    return fuzzer, target, program, patch, run, df
 
 def collect_experiment_data(workdir, workers):
     def init(*args):
@@ -179,12 +179,12 @@ def collect_experiment_data(workdir, workers):
         results = pool.starmap(process_one_campaign,
             ((path,) for path in find_campaigns(workdir))
         )
-        for fuzzer, target, program, run, df in results:
+        for fuzzer, target, program, patch, run, df in results:
             if df is not None:
-                experiment[fuzzer][target][program][run] = df
+                experiment[fuzzer][target][program][patch][run] = df
             else:
                 # TODO add an empty df so that the run is accounted for
-                name = f"{fuzzer}/{target}/{program}/{run}"
+                name = f"{fuzzer}/{target}/{program}/{patch}/{run}"
                 logging.warning("%s has been omitted!", name)
     return experiment
 
@@ -213,12 +213,13 @@ def get_experiment_summary(experiment):
     for fuzzer, f_data in experiment.items():
         for target, t_data in f_data.items():
             for program, p_data in t_data.items():
-                for run, df in p_data.items():
-                    reached, triggered = get_ttb_from_df(df)
-                    summary[fuzzer][target][program][run] = {
-                        "reached": reached,
-                        "triggered": triggered
-                    }
+                for patch, patch_data in p_data.items():
+                    for run, df in patch_data.items():
+                        reached, triggered = get_ttb_from_df(df)
+                        summary[fuzzer][target][program][patch][run] = {
+                            "reached": reached,
+                            "triggered": triggered
+                        }
     return default_to_regular(summary)
 
 def configure_verbosity(level):
