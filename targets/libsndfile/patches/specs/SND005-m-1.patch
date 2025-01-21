@@ -10,7 +10,7 @@ index 221a24ed..1824324e 100644
 +		if (marker == CHAN_MARKER) {
 +			MAGMA_LOG("CHAN_MARKER", marker == CHAN_MARKER);
 +		} else {
-+			magma_exit();
++			MAGMA_EXIT;
 +		}
 +#endif
  		switch (marker)
@@ -28,7 +28,7 @@ index 020e0987..97003e00 100644
 +	if (psf->sf.format == SF_FORMAT_AIFF) {
 +		MAGMA_LOG("aiff", psf->sf.format == SF_FORMAT_AIFF);
 +	} else {
-+		magma_exit()
++		MAGMA_EXIT;
 +	}
 +#endif
  	/* Prevent unnecessary seeks */
