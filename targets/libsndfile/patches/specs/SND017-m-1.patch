@@ -1,0 +1,42 @@
+diff --git a/src/sndfile.c b/src/sndfile.c
+index 020e0987..02e110d1 100644
+--- a/src/sndfile.c
++++ b/src/sndfile.c
+@@ -3126,6 +3126,19 @@ psf_open_file (SF_PRIVATE *psf, SF_INFO *sfinfo)
+ 			psf->sf.format = format_from_extension (psf) ;
+ 		} ;
+ 
++#ifdef MAGMA_ENABLE_CANARIES
++	if (SF_CONTAINER (psf->sf.format) == SF_FORMAT_W64) {
++		MAGMA_LOG("w64", SF_CONTAINER (psf->sf.format) == SF_FORMAT_W64);
++	}
++	else if (SF_CONTAINER (psf->sf.format) == SF_FORMAT_RF64) {
++		MAGMA_LOG("rf64", SF_CONTAINER (psf->sf.format) == SF_FORMAT_RF64);
++	}
++	else if (SF_CONTAINER (psf->sf.format) == SF_FORMAT_WAV || SF_CONTAINER (psf->sf.format) == SF_FORMAT_WAVEX) {
++		MAGMA_LOG("wav", MAGMA_OR(SF_CONTAINER (psf->sf.format) == SF_FORMAT_WAV, SF_CONTAINER (psf->sf.format) == SF_FORMAT_WAVEX));
++	} else {
++		MAGMA_EXIT;
++	}
++#endif
+ 	/* Prevent unnecessary seeks */
+ 	psf->last_op = psf->file.mode ;
+ 
+diff --git a/src/wavlike.c b/src/wavlike.c
+index 69b8d352..50d8bdf4 100644
+--- a/src/wavlike.c
++++ b/src/wavlike.c
+@@ -143,6 +143,13 @@ wavlike_read_fmt_chunk (SF_PRIVATE *psf, int fmtsize)
+ 					&(wav_fmt->min.samplerate), &(wav_fmt->min.bytespersec),
+ 					&(wav_fmt->min.blockalign), &(wav_fmt->min.bitwidth)) ;
+ 
++#ifdef MAGMA_ENABLE_CANARIES
++	if (wav_fmt->format == WAVE_FORMAT_EXTENSIBLE) {
++		MAGMA_LOG("WAVE_FORMAT_EXTENSIBLE", wav_fmt->format == WAVE_FORMAT_EXTENSIBLE);
++	} else {
++		MAGMA_EXIT;
++	}
++#endif
+ 	psf_log_printf (psf, "  Format        : 0x%X => %s\n", wav_fmt->format, wavlike_format_str (wav_fmt->format)) ;
+ 	psf_log_printf (psf, "  Channels      : %d\n", wav_fmt->min.channels) ;
+ 	psf_log_printf (psf, "  Sample Rate   : %d\n", wav_fmt->min.samplerate) ;
