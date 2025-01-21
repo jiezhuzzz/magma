@@ -84,7 +84,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--fuzzers", type=str, required=True, nargs="+")
     parser.add_argument("-p", "--patches", type=str, required=True, nargs="+")
-    parser.add_argument("--workdir", type=str, default="./workdir")
+    parser.add_argument("-w", "--workdir", type=str, default="workdir")
     parser.add_argument("--repeat", type=int, default=10)
     parser.add_argument("--timeout", type=str, default="24h")
     parser.add_argument("--poll", type=int, default=5)
