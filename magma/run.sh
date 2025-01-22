@@ -26,7 +26,6 @@ cd "$SHARED"
 
 # prune the seed corpus for any fault-triggering test-cases
 seeds=($(find "$TARGET/corpus/$PROGRAM" -type f))
-echo "seeds: ${seeds[@]}"
 for seed in "${seeds[@]}"; do
     out="$("$MAGMA"/runonce.sh "$seed")"
     code=$?
@@ -68,13 +67,31 @@ done &
 
 echo "Campaign launched at $(date '+%F %R')"
 
-timeout $TIMEOUT "$FUZZER/run.sh" | \
-    multilog n2 s$LOGSIZE "$SHARED/log"
+# use process substitution to start multilog
+timeout $TIMEOUT "$FUZZER/run.sh" > >(multilog n2 s$LOGSIZE "$SHARED/log") &
+RUN_PID=$!
 
-if [ -f "$SHARED/log/current" ]; then
-    cat "$SHARED/log/current"
+echo "RUN_PID: $RUN_PID"
+
+echo "Running jobs: $(jobs -l)"
+
+while kill -0 $RUN_PID 2>/dev/null; do
+    if [ -f "/tmp/magma_bug_t" ]; then
+        echo "Termination signal received, stopping fuzzer..."
+        kill $RUN_PID
+        break
+    fi
+    sleep $(( POLL * 2 ))
+done
+
+sleep 2
+if kill -0 $RUN_PID 2>/dev/null; then
+    echo "Fuzzer did not terminate, killing it..."
+    kill -9 $RUN_PID
 fi
 
 echo "Campaign terminated at $(date '+%F %R')"
+
+echo "Still running jobs: $(jobs -l)"
 
 kill $(jobs -p)

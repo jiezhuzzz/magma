@@ -137,11 +137,20 @@ void *dump_one_row_header(pcanary_t canary, void *arg)
 
 void *dump_one_row_data(pcanary_t canary, void *arg)
 {
+    static bool bug_triggered = false;
     bool *begin = (bool *)arg;
     if (!*begin) {
         putc(',', stdout);
     }
     fprintf(stdout, "%llu,%llu", canary->reached, canary->triggered);
+    // Write to a file instead of setting env var
+    if (!bug_triggered && strstr(canary->name, "MAGMA_BUG") && canary->triggered) {
+        FILE *f = fopen("/tmp/magma_bug_t", "w");
+        if (f != NULL) {
+            fclose(f);
+            bug_triggered = true;
+        }
+    }
     *begin = false;
     return NULL;
 }
