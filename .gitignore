@@ -1,2 +1,3 @@
-tools/captain/workdir
-tools/captain/captainrc
+/workdir
+/results
+/tools/captain/captainrc

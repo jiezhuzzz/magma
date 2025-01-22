@@ -35,7 +35,8 @@ TMPFS_SIZE=${TMPFS_SIZE:-50g}
 export POLL=${POLL:-5}
 export TIMEOUT=${TIMEOUT:-1m}
 
-WORKDIR="$(realpath "$WORKDIR")"
+# WORKDIR="$(realpath "$WORKDIR")"
+WORKDIR=$MAGMA/workdir/$(basename "$WORKDIR")
 export ARDIR="$WORKDIR/ar"
 export CACHEDIR="$WORKDIR/cache"
 export LOGDIR="$WORKDIR/log"
@@ -237,7 +238,34 @@ cleanup()
     fi
 }
 
-trap cleanup EXIT
+extract_results()
+{
+    echo_time "Extracting results"
+
+    if [ ! -d $MAGMA/results ]; then
+        mkdir -p $MAGMA/results
+    fi
+
+    RES_NAME=$(basename "$WORKDIR")
+    uv run $MAGMA/tools/benchd/exp2json.py $WORKDIR $MAGMA/results/$RES_NAME.json
+}
+
+handle_sigint()
+{
+    exit 130
+}
+
+exit_handler()
+{
+    local exit_status=$?
+    cleanup
+    if [ $exit_status -eq 0 ]; then
+        extract_results
+    fi
+}
+
+trap exit_handler EXIT
+trap handle_sigint INT
 
 # schedule campaigns
 for FUZZER in "${FUZZERS[@]}"; do
