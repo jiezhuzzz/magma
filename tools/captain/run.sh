@@ -267,18 +267,15 @@ exit_handler()
 trap exit_handler EXIT
 trap handle_sigint INT
 
-# schedule campaigns
+# build all Docker images first
 for FUZZER in "${FUZZERS[@]}"; do
     export FUZZER
-
     TARGETS=($(get_var_or_default $FUZZER 'TARGETS'))
     for TARGET in "${TARGETS[@]}"; do
         export TARGET
-
         PATCHES=($(get_var_or_default $FUZZER $TARGET 'PATCHES'))
         for PATCH in "${PATCHES[@]}"; do
             export PATCH
-
             export FUZZARGS="$(get_var_or_default $FUZZER $TARGET 'FUZZARGS')"
 
             # build the Docker image
@@ -289,6 +286,20 @@ for FUZZER in "${FUZZERS[@]}"; do
                 echo_time "Failed to build $IMG_NAME. Check build log for info."
                 continue
             fi
+        done
+    done
+done
+
+# now start all campaigns
+for FUZZER in "${FUZZERS[@]}"; do
+    export FUZZER
+    TARGETS=($(get_var_or_default $FUZZER 'TARGETS'))
+    for TARGET in "${TARGETS[@]}"; do
+        export TARGET
+        PATCHES=($(get_var_or_default $FUZZER $TARGET 'PATCHES'))
+        for PATCH in "${PATCHES[@]}"; do
+            export PATCH
+            export FUZZARGS="$(get_var_or_default $FUZZER $TARGET 'FUZZARGS')"
 
             PROGRAMS=($(get_var_or_default $FUZZER $TARGET 'PROGRAMS'))
             for PROGRAM in "${PROGRAMS[@]}"; do
