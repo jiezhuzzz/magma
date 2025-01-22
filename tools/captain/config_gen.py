@@ -10,29 +10,29 @@ import os
 # Map of target names to their associated fuzzing programs
 PROGRAMS: Dict[str, List[str]] = {
     "libpng": ["libpng_read_fuzzer"],
-    "libsndfile": ["sndfile_fuzzer"], 
-    "libtiff": ["tiff_read_rgba_fuzzer", "tiffcp"],
-    "libxml2": ["libxml2_xml_read_memory_fuzzer", "xmllint"],
-    "lua": ["lua"],
-    "openssl": ["asn1", "asn1parse", "bignum", "server", "client", "x509"],
-    "php": ["json", "exif", "unserialize", "parser"],
-    "poppler": ["pdf_fuzzer", "pdfimages", "pdftoppm"],
-    "sqlite3": ["sqlite3_fuzz"],
-    "demo": ["demo"]
+    # "libsndfile": ["sndfile_fuzzer"], 
+    # "libtiff": ["tiff_read_rgba_fuzzer", "tiffcp"],
+    # "libxml2": ["libxml2_xml_read_memory_fuzzer", "xmllint"],
+    # "lua": ["lua"],
+    # "openssl": ["asn1", "asn1parse", "bignum", "server", "client", "x509"],
+    # "php": ["json", "exif", "unserialize", "parser"],
+    # "poppler": ["pdf_fuzzer", "pdfimages", "pdftoppm"],
+    # "sqlite3": ["sqlite3_fuzz"],
+    # "demo": ["demo"]
 }
 
 # Map of patch prefixes to target names
 PATCH_TO_TARGET = {
     "PNG": "libpng",
-    "SND": "libsndfile", 
-    "TIF": "libtiff",
-    "XML": "libxml2",
-    "LUA": "lua",
-    "SSL": "openssl",
-    "PHP": "php",
-    "PDF": "poppler",
-    "SQL": "sqlite3",
-    "DEM": "demo"
+    # "SND": "libsndfile", 
+    # "TIF": "libtiff",
+    # "XML": "libxml2",
+    # "LUA": "lua",
+    # "SSL": "openssl",
+    # "PHP": "php",
+    # "PDF": "poppler",
+    # "SQL": "sqlite3",
+    # "DEM": "demo"
 }
 
 def get_target_from_patch(patch_name: str) -> str:

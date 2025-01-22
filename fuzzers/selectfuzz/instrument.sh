@@ -10,14 +10,42 @@ set -e
 # - env CFLAGS and CXXFLAGS must be set to link against Magma instrumentation
 ##
 
-export CC="$FUZZER/repo/afl-clang-fast"
-export CXX="$FUZZER/repo/afl-clang-fast++"
-export AS="$FUZZER/repo/afl-as"
+export AFLGO=$FUZZER/repo
+
+mkdir -p $OUT/temp
+export TMP_DIR=$OUT/temp
+export CC=$AFLGO/afl-clang-fast
+export CXX=$AFLGO/afl-clang-fast++
+
+(	
+	echo "## Set Target"
+    pushd $TARGET/repo
+	echo "## Get Target"
+	echo "targets"
+	grep -nr MAGMA_LOG | cut -f1,2 -d':' | grep -v ".orig:"  | grep -v "Binary file" > $TMP_DIR/BBtargets.txt
+
+	cat $TMP_DIR/BBtargets.txt
+	popd
+)
+
+
+export LDFLAGS="$LDFLAGS -lpthread"
+export ADDITIONAL="-targets=$TMP_DIR/BBtargets.txt -outdir=$TMP_DIR -flto -fuse-ld=gold -Wl,-plugin-opt=save-temps"
+# BBtargets
+# real
 
 export LIBS="$LIBS -l:afl_driver.o -lstdc++"
 
 "$MAGMA/build.sh"
+
+CFLAGS="$CFLAGS $ADDITIONAL"
+CXXFLAGS="$CXXFLAGS $ADDITIONAL"
 "$TARGET/build.sh"
+
+cat $TMP_DIR/BBnames.txt | rev | cut -d: -f2- | rev | sort | uniq > $TMP_DIR/BBnames2.txt && mv $TMP_DIR/BBnames2.txt $TMP_DIR/BBnames.txt
+cat $TMP_DIR/BBcalls.txt | sort | uniq > $TMP_DIR/BBcalls2.txt && mv $TMP_DIR/BBcalls2.txt $TMP_DIR/BBcalls.txt
+
+$AFLGO/scripts/genDistance.sh $OUT $TMP_DIR
 
 # NOTE: We pass $OUT directly to the target build.sh script, since the artifact
 #       itself is the fuzz target. In the case of Angora, we might need to

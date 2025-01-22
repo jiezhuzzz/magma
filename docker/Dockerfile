@@ -1,19 +1,19 @@
 # FROM ubuntu:16.04
 
+# TODO remove sudo for user "magma" to avoid unwanted priv escalation from
+# other attack vectors.
+
 # ----------------------------------------------------------------------
 FROM magma/selectfuzz/libpng/png003:latest
 # ----------------------------------------------------------------------
 
-
-# # TODO remove sudo for user "magma" to avoid unwanted priv escalation from
-# # other attack vectors.
 
 # RUN apt-get update && apt-get install -y sudo vim
 
 # ## Magma directory hierarchy
 # # magma_root is relative to the docker-build's working directory
 # # The Docker image must be built in the root of the magma directory
-ARG magma_root=./
+# ARG magma_root=./
 
 # ## Path variables inside the container
 # ENV MAGMA_R /magma
@@ -54,12 +54,11 @@ ARG magma_root=./
 # ENV FUZZER 	${MAGMA_R}/${fuzzer_path}
 # USER root:root
 # RUN mkdir -p ${FUZZER} && chown magma:magma ${FUZZER}
-# COPY --chown=magma:magma ${magma_root}/${fuzzer_path}/build.sh ${FUZZER}/build.sh
+# COPY --chown=magma:magma ${magma_root}/${fuzzer_path} ${FUZZER}/
 # RUN ${FUZZER}/preinstall.sh
 # USER magma:magma
 # RUN ${FUZZER}/fetch.sh
 # RUN ${FUZZER}/build.sh
-
 
 # ARG target_name
 # ARG target_path=targets/${target_name}
@@ -73,9 +72,7 @@ ARG magma_root=./
 # ARG patch_name
 # RUN ${MAGMA}/apply_patches.sh ${patch_name}
 
-# ------------------------------------------------------
-
-# ## Configuration parameters
+## Configuration parameters
 ARG isan
 ARG harden
 ARG canaries
@@ -95,6 +92,6 @@ ENV LIBS -l:magma.o -lrt
 ENV LDFLAGS -L"${OUT}" -g
 # ENV AFL_DONT_OPTIMIZE 1
 
-RUN ${FUZZER}/instrument.sh
+# RUN ${FUZZER}/instrument.sh
 
 # ENTRYPOINT "${MAGMA}/run.sh"

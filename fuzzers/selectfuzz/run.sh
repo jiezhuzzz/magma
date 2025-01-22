@@ -13,16 +13,6 @@
 
 mkdir -p "$SHARED/findings"
 
-export AFLGO=$FUZZER/repo
-
-mkdir obj-aflgo; mkdir obj-aflgo/temp
-export SUBJECT=$PWD; export TMP_DIR=$PWD/obj-aflgo/temp
-export CC=$AFLGO/afl-clang-fast; export CXX=$AFLGO/afl-clang-fast++
-export LDFLAGS=-lpthread
-
-
-
-
 export AFL_SKIP_CPUFREQ=1
 export AFL_NO_AFFINITY=1
 "$FUZZER/repo/afl-fuzz" -m 100M -i "$TARGET/corpus/$PROGRAM" -o "$SHARED/findings" \
