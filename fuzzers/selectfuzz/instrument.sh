@@ -22,9 +22,11 @@ export CXX=$AFLGO/afl-clang-fast++
     pushd $TARGET/repo
 	echo "## Get Target"
 	echo "targets"
-	grep -nr MAGMA_LOG | cut -f1,2 -d':' | grep -v ".orig:"  | grep -v "Binary file" > $TMP_DIR/BBtargets.txt
 
-	cat $TMP_DIR/BBtargets.txt
+	# Need double check
+	grep -nr MAGMA_LOG | cut -f1,2 -d':' | grep -v ".orig:"  | grep -v "Binary file" > $TMP_DIR/real.txt
+
+	cat $TMP_DIR/real.txt
 	popd
 )
 
@@ -46,6 +48,9 @@ cat $TMP_DIR/BBnames.txt | rev | cut -d: -f2- | rev | sort | uniq > $TMP_DIR/BBn
 cat $TMP_DIR/BBcalls.txt | sort | uniq > $TMP_DIR/BBcalls2.txt && mv $TMP_DIR/BBcalls2.txt $TMP_DIR/BBcalls.txt
 
 $AFLGO/scripts/genDistance.sh $OUT $TMP_DIR
+
+CFLAGS="-distance=$TMP_DIR/distance.cfg.txt" CXXFLAGS="-distance=$TMP_DIR/distance.cfg.txt"
+"$TARGET/build.sh"
 
 # NOTE: We pass $OUT directly to the target build.sh script, since the artifact
 #       itself is the fuzz target. In the case of Angora, we might need to

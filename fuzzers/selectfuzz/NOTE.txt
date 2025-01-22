@@ -12,6 +12,9 @@ ${TARGET}/preinstall.sh # apt-get install packages
 ${TARGET}/fetch.sh # fetch lib from github
 ${MAGMA}/apply_patches.sh # find and apply all patches
 
--> ${FUZZER}/instrument.sh
-  -> $MAGMA/build.sh
-  -> $TARGET/build.sh # build make target
+^ ${FUZZER}/instrument.sh
+  ^ $MAGMA/build.sh
+  ^ $TARGET/build.sh # build make target
+
+
+* ${FUZZER}/run.sh
