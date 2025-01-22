@@ -1,8 +1,8 @@
 diff --git a/src/sndfile.c b/src/sndfile.c
-index 365c1361..2d7431cf 100644
+index 365c1361..f824c7d2 100644
 --- a/src/sndfile.c
 +++ b/src/sndfile.c
-@@ -3114,6 +3114,10 @@ psf_open_file (SF_PRIVATE *psf, SF_INFO *sfinfo)
+@@ -3114,6 +3114,11 @@ psf_open_file (SF_PRIVATE *psf, SF_INFO *sfinfo)
  			psf->sf.format = format_from_extension (psf) ;
  		} ;
  
