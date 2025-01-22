@@ -236,7 +236,10 @@ cleanup()
         echo_time "Obtaining sudo permissions to umount tmpfs"
         sudo umount "$CACHEDIR"
     fi
+}
 
+extract_results()
+{
     echo_time "Extracting results"
 
     if [ ! -d $MAGMA/results ]; then
@@ -247,7 +250,22 @@ cleanup()
     uv run $MAGMA/tools/benchd/exp2json.py $WORKDIR $MAGMA/results/$RES_NAME.json
 }
 
-trap cleanup EXIT
+handle_sigint()
+{
+    exit 130
+}
+
+exit_handler()
+{
+    local exit_status=$?
+    cleanup
+    if [ $exit_status -eq 0 ]; then
+        extract_results
+    fi
+}
+
+trap exit_handler EXIT
+trap handle_sigint INT
 
 # schedule campaigns
 for FUZZER in "${FUZZERS[@]}"; do
