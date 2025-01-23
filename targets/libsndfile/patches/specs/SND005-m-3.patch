@@ -1,8 +1,8 @@
 diff --git a/src/aiff.c b/src/aiff.c
-index 221a24ed..1824324e 100644
+index 221a24ed..b5ab655e 100644
 --- a/src/aiff.c
 +++ b/src/aiff.c
-@@ -442,6 +442,10 @@ aiff_read_header (SF_PRIVATE *psf, COMM_CHUNK *comm_fmt)
+@@ -442,6 +442,11 @@ aiff_read_header (SF_PRIVATE *psf, COMM_CHUNK *comm_fmt)
  
  		psf_store_read_chunk_u32 (&psf->rchunks, marker, psf_ftell (psf), chunk_size) ;
  
@@ -15,10 +15,10 @@ index 221a24ed..1824324e 100644
  		{	case FORM_MARKER :
  					if (found_chunk)
 diff --git a/src/sndfile.c b/src/sndfile.c
-index 020e0987..97003e00 100644
+index 020e0987..5384d041 100644
 --- a/src/sndfile.c
 +++ b/src/sndfile.c
-@@ -3126,6 +3126,10 @@ psf_open_file (SF_PRIVATE *psf, SF_INFO *sfinfo)
+@@ -3126,6 +3126,11 @@ psf_open_file (SF_PRIVATE *psf, SF_INFO *sfinfo)
  			psf->sf.format = format_from_extension (psf) ;
  		} ;
  
