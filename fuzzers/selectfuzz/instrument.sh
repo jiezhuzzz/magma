@@ -40,8 +40,11 @@ export LIBS="$LIBS -l:afl_driver.o -lstdc++"
 
 "$MAGMA/build.sh"
 
-CFLAGS="$CFLAGS $ADDITIONAL"
-CXXFLAGS="$CXXFLAGS $ADDITIONAL"
+TEMP_CFLAGS=$CFLAGS
+TEMP_CXXFLAGS=$CXXFLAGS
+
+CFLAGS="$TEMP_CFLAGS $ADDITIONAL"
+CXXFLAGS="$TEMP_CXXFLAGS $ADDITIONAL"
 "$TARGET/build.sh"
 
 cat $TMP_DIR/BBnames.txt | rev | cut -d: -f2- | rev | sort | uniq > $TMP_DIR/BBnames2.txt && mv $TMP_DIR/BBnames2.txt $TMP_DIR/BBnames.txt
@@ -49,7 +52,7 @@ cat $TMP_DIR/BBcalls.txt | sort | uniq > $TMP_DIR/BBcalls2.txt && mv $TMP_DIR/BB
 
 $AFLGO/scripts/genDistance.sh $OUT $TMP_DIR
 
-CFLAGS="-distance=$TMP_DIR/distance.cfg.txt" CXXFLAGS="-distance=$TMP_DIR/distance.cfg.txt"
+CFLAGS="$TEMP_CFLAGS -distance=$TMP_DIR/distance.cfg.txt" CXXFLAGS="$TEMP_CXXFLAGS -distance=$TMP_DIR/distance.cfg.txt"
 "$TARGET/build.sh"
 
 # NOTE: We pass $OUT directly to the target build.sh script, since the artifact

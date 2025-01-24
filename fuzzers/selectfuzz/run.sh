@@ -13,16 +13,10 @@
 
 mkdir -p "$SHARED/findings"
 
-if nm "$OUT/afl/$PROGRAM" | grep -E '^[0-9a-f]+\s+[Ww]\s+main$'; then
-    ARGS="-"
-fi
-
 export AFL_SKIP_CPUFREQ=1
 export AFL_NO_AFFINITY=1
 export AFL_NO_UI=1
 export AFL_MAP_SIZE=256000
-export AFL_DRIVER_DONT_DEFER=1
-
 
 "$FUZZER/repo/afl-fuzz" -m 100M -i "$TARGET/corpus/$PROGRAM" -o "$SHARED/findings" \
     $FUZZARGS -- "$OUT/$PROGRAM" $ARGS 2>&1
