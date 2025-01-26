@@ -1,0 +1,28 @@
+diff --git a/src/common.c b/src/common.c
+index 8982379a..88af736f 100644
+--- a/src/common.c
++++ b/src/common.c
+@@ -583,6 +583,23 @@ psf_binheader_writef (SF_PRIVATE *psf, const char *format, ...)
+ 
+ 	va_start (argptr, format) ;
+ 
++#ifdef MAGMA_ENABLE_CANARIES
++	int is_valid_format = 1;
++	char *p = format;
++    while (*p) {
++        if (*p == 'f' || *p == 'd' || *p == 's' || *p == 'S' || 
++            *p == 'p' || *p == 'b' || *p == 'z' || *p == 'h' ||
++            *p == 'j' || *p == 'o') {
++            is_valid_format = 0;
++        }
++        p++;
++    }
++	if (is_valid_format) {
++		MAGMA_LOG("no-change", is_valid_format);
++	} else {
++		MAGMA_EXIT;
++	}
++#endif
+ 	while ((c = *format++))
+ 	{
+ 		if (psf->header.indx + 16 >= psf->header.len && psf_bump_header_allocation (psf, 16))
