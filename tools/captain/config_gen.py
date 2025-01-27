@@ -58,7 +58,7 @@ def generate_captain_config(args: argparse.Namespace) -> None:
         f"WORKDIR={args.workdir}",
         f"REPEAT={args.repeat}",
         f"WORKERS={workers}",
-        f"WORKER_POOL={' '.join(str(x) for x in range(1, physical_cores + 1))}",
+        f"WORKER_POOL=\"{' '.join(str(x) for x in range(1, physical_cores + 1))}\"",
         f"TIMEOUT={args.timeout}",
         f"POLL={args.poll}",
         f"FUZZERS=({' '.join(args.fuzzers)})",
