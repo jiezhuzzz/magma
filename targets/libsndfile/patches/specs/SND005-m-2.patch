@@ -1,17 +1,3 @@
-diff --git a/src/aiff.c b/src/aiff.c
-index 221a24ed..3fc62d91 100644
---- a/src/aiff.c
-+++ b/src/aiff.c
-@@ -442,6 +442,9 @@ aiff_read_header (SF_PRIVATE *psf, COMM_CHUNK *comm_fmt)
- 
- 		psf_store_read_chunk_u32 (&psf->rchunks, marker, psf_ftell (psf), chunk_size) ;
- 
-+#ifdef MAGMA_ENABLE_CANARIES
-+		MAGMA_LOG("CHAN_MARKER", marker == CHAN_MARKER);
-+#endif
- 		switch (marker)
- 		{	case FORM_MARKER :
- 					if (found_chunk)
 diff --git a/src/sndfile.c b/src/sndfile.c
 index 020e0987..81078812 100644
 --- a/src/sndfile.c
